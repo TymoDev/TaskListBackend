@@ -36,12 +36,12 @@ namespace Api.Controllers.User
             return Ok(id);
         }
 
-        [HttpPost("login/{id:guid}")]
-        public async Task<IActionResult> Login(Guid id,UserRequest request )
+        [HttpPost("login")]
+        public async Task<IActionResult> Login(UserRequest request )
         {
             //Create token,Check e-mail and password
             var httpContext = httpContextAccessor.HttpContext;
-            var tokenResultModel = await auth.Login(new UserRequestId(id,request.Username,request.Email,request.Password));
+            var tokenResultModel = await auth.Login(new UserRequest(request.Username,request.Email,request.Password));
             if (!tokenResultModel.Success)
             {
                 return BadRequest(tokenResultModel.ErrorMessage);
@@ -50,7 +50,7 @@ namespace Api.Controllers.User
 
             //Save token in cookies
             httpContext.Response.Cookies.Append("tasty-cookies",token);
-            return Ok(id);
+            return Ok(request.Email);
         }
 
 

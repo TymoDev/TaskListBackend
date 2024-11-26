@@ -9,7 +9,7 @@ namespace Core.DTO.TaskDTO
     public record TaskRequest
         (
           string TaskName,
-          string TaskStatus,
-          string UserId
+          string TaskStatus
+          //string UserId
         );
 }

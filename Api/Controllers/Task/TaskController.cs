@@ -2,9 +2,7 @@
 using Core.DTO.TaskDTO;
 using Core.ResultModels;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using System.Runtime.CompilerServices;
 
 namespace Api.Controllers.Task
 {
@@ -26,7 +24,7 @@ namespace Api.Controllers.Task
             var responce = tasks.Select(r => new TaskResponse(r.id, r.TaskName, r.taskStatus));
             return Ok(responce);
         }
-        [Authorize]
+        //     [Authorize]
         [HttpGet("{id:guid}")]
         public async Task<ActionResult<TaskResponse>> GetTask(Guid id)
         {
@@ -38,8 +36,8 @@ namespace Api.Controllers.Task
             var responce = new TaskResponse(task.id, task.TaskName, task.taskStatus);
             return Ok(responce);
         }
-        [Authorize]
-        [HttpGet("user/{userId:guid}")]
+        //   [Authorize]
+        /*[HttpGet("user/{userId:guid}")]
         public async Task<ActionResult<List<TaskResponse>>> GetUserTasks(Guid userId)
         {
             var tasks = await service.GetUserTasks(userId);
@@ -49,8 +47,8 @@ namespace Api.Controllers.Task
             }
             var responce = tasks.Select(r => new TaskResponse(r.id, r.TaskName, r.taskStatus));
             return Ok(responce);
-        }
-        [Authorize]
+        }*/
+        //     [Authorize]
         [HttpPost]
         public async Task<ActionResult<Guid>> CreateTask([FromBody] TaskRequest request)
         {
@@ -62,7 +60,7 @@ namespace Api.Controllers.Task
             }
             return Ok(id);
         }
-        [Authorize]
+        //    [Authorize]
         [HttpPut("{id:guid}")]
         public async Task<ActionResult<Guid>> UpdateTask(Guid id, [FromBody] TaskRequest request)
         {
@@ -77,7 +75,7 @@ namespace Api.Controllers.Task
             }
             return Ok(id);
         }
-        [Authorize]
+        //       [Authorize]
         [HttpDelete("{id:guid}")]
         public async Task<ActionResult<ResultModel>> DeleteTask(Guid id)
         {

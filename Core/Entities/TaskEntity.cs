@@ -13,8 +13,8 @@ namespace Core.Entities
         public required string TaskName { get; set; }
         public required string TaskStatus { get; set; }
 
-        [ForeignKey("User")]
-        public Guid UserId { get; set; }
-        public UserEntity User { get; set; }
+      //  [ForeignKey("User")]
+      //  public Guid UserId { get; set; }
+      // public UserEntity User { get; set; }
     }
 }

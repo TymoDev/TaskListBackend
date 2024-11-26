@@ -24,9 +24,21 @@ namespace Api.Controllers.User
         }
 
         [HttpGet("{id:guid}")]
-        public async Task<ActionResult<UserResponcePassword>> GetUserId(Guid id)
+        public async Task<ActionResult<UserResponcePassword>> GetUserById(Guid id)
         {
             var userResponse = await service.GetUser(id);
+            if (userResponse == null)
+            {
+                return NotFound();
+            }
+            var responce = new UserResponcePassword(userResponse.Id, userResponse.Username, userResponse.Email, userResponse.Password);
+            return Ok(responce);
+
+        }
+        [HttpGet("{email}")]
+        public async Task<ActionResult<UserResponcePassword>> GetUserByEmail(string email)
+        {
+            var userResponse = await service.GetUserByEmail(email);
             if (userResponse == null)
             {
                 return NotFound();

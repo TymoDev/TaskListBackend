@@ -45,9 +45,9 @@ namespace Aplication.Services.User
             return LoginResultModel.Ok(token);
         }
 
-        public async Task<LoginResultModel> Login(UserRequestId request)
+        public async Task<LoginResultModel> Login(UserRequest request)
         {
-            var user = await repository.GetUserById(request.id);
+            var user = await repository.GetUserByEmail(request.Email);
             if (user == null)
             {
                 return LoginResultModel.Error("BadRequest");

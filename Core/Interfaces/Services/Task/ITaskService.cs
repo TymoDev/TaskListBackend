@@ -9,7 +9,7 @@ namespace BusinessLogic.Services
         Task<ResultModel?> DeleteTask(Guid id);
         Task<TaskResponse?> GetTask(Guid id);
         Task<List<TaskResponse>> GetTasks();
-        Task<List<TaskResponse?>> GetUserTasks(Guid userId);
+        //Task<List<TaskResponse?>> GetUserTasks(Guid userId);
         Task<ResultModel?> UpdateTask(Guid id, TaskRequest request);
     }
 }

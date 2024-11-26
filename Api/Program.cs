@@ -25,6 +25,16 @@ builder.Services.AddDbContext<DataContext>
     (options =>
       options.UseSqlite(builder.Configuration.GetConnectionString("DbConnection"))  
     );
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigins",
+        builder =>
+        {
+            builder.WithOrigins("http://localhost:5173") 
+                   .AllowAnyHeader()
+                   .AllowAnyMethod();
+        });
+});
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(nameof(JwtOptions)));
 
 builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
@@ -57,7 +67,7 @@ app.UseCookiePolicy(new CookiePolicyOptions
 });
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.UseCors("AllowSpecificOrigins");
 app.MapControllers();
 
 app.Run();

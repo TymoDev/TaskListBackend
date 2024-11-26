@@ -6,5 +6,6 @@ namespace Aplication.Services
     {
         Task<UserResponcePassword?> GetUser(Guid id);
         Task<List<UserResponcePassword>> GetUsers();
+        Task<UserResponcePassword?> GetUserByEmail(string email);
     }
 }

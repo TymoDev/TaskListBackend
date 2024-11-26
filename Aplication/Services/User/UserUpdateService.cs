@@ -28,7 +28,6 @@ namespace Aplication.Services.User
             var userModelResult = UsernameModel.Create(request.Username);
             if (!userModelResult.Success)
             {
-
                 return ResultModel.Error(userModelResult.ErrorMessage);
             }
             var passwordModelResult = UserPasswordModel.Create(request.Password);
