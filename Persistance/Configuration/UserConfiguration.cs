@@ -1,9 +1,10 @@
 ﻿using Core.Entities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace DataAccess.Configurations
 {
-    public class UserConfiguration
+    public class UserConfiguration : IEntityTypeConfiguration<UserEntity>
     {
         public void Configure(EntityTypeBuilder<UserEntity> builder)
         {
@@ -17,9 +18,7 @@ namespace DataAccess.Configurations
             builder.HasIndex(x => x.UserName)
              .IsUnique();
             builder.HasIndex(x => x.Email)
-              .IsUnique();
-
-
+             .IsUnique();
         }
     }
 }

@@ -16,7 +16,6 @@ namespace Api.Controllers.Task
         {
             this.service = service;
         }
-        [Authorize]
         [HttpGet]
         public async Task<ActionResult<List<TaskResponse>>> GetTasks()
         {
@@ -24,7 +23,7 @@ namespace Api.Controllers.Task
             var responce = tasks.Select(r => new TaskResponse(r.id, r.TaskName, r.taskStatus));
             return Ok(responce);
         }
-        //     [Authorize]
+
         [HttpGet("{id:guid}")]
         public async Task<ActionResult<TaskResponse>> GetTask(Guid id)
         {
