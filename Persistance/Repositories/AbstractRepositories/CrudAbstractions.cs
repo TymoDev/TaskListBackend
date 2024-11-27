@@ -30,9 +30,9 @@ namespace Persistance.Repositories.AbstractRepositories
         }
         public async Task<Guid> Create(TEntity entity)
         {
-            await dbSet.AddAsync(entity);
-            await context.SaveChangesAsync();
-            return ((dynamic)entity).Id;
+           await dbSet.AddAsync(entity);
+           await context.SaveChangesAsync();
+           return ((dynamic)entity).Id; 
         }
         public async Task<Guid> Update(Guid id, Action<TEntity> updateAction)
         {

@@ -19,7 +19,29 @@ namespace Api.Controllers.User
         [HttpPut("{id:guid}")]
         public async Task<ActionResult<Guid>> UpdateUser(Guid id, [FromBody] UserRequest request)
         {
-            var result = await service.UpdateUser(new UserRequestId(id,request.Username,request.Email,request.Password));
+            ResultModel result;
+            try
+            {
+                result = await service.UpdateUser(new UserRequestId(id, request.Username, request.Email, request.Password));
+            } 
+            catch (Microsoft.EntityFrameworkCore.DbUpdateException ex) 
+            {
+                return Conflict(new
+                {
+                    Status = 409,
+                    Error = "Conflict",
+                    Message = "The email or username already exists. Please choose a different value."
+                });
+            }
+            catch (Exception ex) 
+            {
+                return StatusCode(500, new
+                {
+                    Status = 500,
+                    Error = "Internal Server Error",
+                    Message = ex.Message
+                });
+            }
             if (result == null)
             {
                 return NotFound();
