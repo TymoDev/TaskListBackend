@@ -5,11 +5,12 @@ namespace BusinessLogic.Services
 {
     public interface ITaskService
     {
-        Task<ResultModel> CreateTask(TaskRequest request);
-        Task<ResultModel?> DeleteTask(Guid id);
-        Task<TaskResponse?> GetTask(Guid id);
+        Task<ResultModel> CreateTask(TaskRequest request, Guid userId);
+        Task<ResultModel?> DeleteTask(Guid id, Guid userId);
+        Task<TaskResponse?> GetTask(Guid id, Guid userId);
         Task<List<TaskResponse>> GetTasks();
-        //Task<List<TaskResponse?>> GetUserTasks(Guid userId);
-        Task<ResultModel?> UpdateTask(Guid id, TaskRequest request);
+
+        Task<List<TaskResponse?>> GetUserTasks(Guid userId);
+        Task<ResultModel?> UpdateTask(Guid id, Guid userId, TaskRequest request);
     }
 }

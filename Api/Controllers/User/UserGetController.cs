@@ -31,7 +31,7 @@ namespace Api.Controllers.User
             {
                 return NotFound();
             }
-            var responce = new UserResponcePassword(userResponse.Id, userResponse.Username, userResponse.Email, userResponse.Password);
+            var responce = new UserResponce(userResponse.Id, userResponse.Username, userResponse.Email);
             return Ok(responce);
 
         }
@@ -43,7 +43,7 @@ namespace Api.Controllers.User
             {
                 return NotFound();
             }
-            var responce = new UserResponcePassword(userResponse.Id, userResponse.Username, userResponse.Email, userResponse.Password);
+            var responce = new UserResponce(userResponse.Id, userResponse.Username, userResponse.Email);
             return Ok(responce);
 
         }

@@ -33,6 +33,7 @@ namespace Api.Extensions
                         }
                     };
 
+
                 });
 
             services.AddAuthorization();

@@ -17,6 +17,7 @@ namespace Api.Controllers.Task
             this.service = service;
         }
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<List<TaskResponse>>> GetTasks()
         {
             var tasks = await service.GetTasks();
@@ -25,9 +26,12 @@ namespace Api.Controllers.Task
         }
 
         [HttpGet("{id:guid}")]
+        [Authorize]
         public async Task<ActionResult<TaskResponse>> GetTask(Guid id)
         {
-            var task = await service.GetTask(id);
+            var userId = User.FindFirst("userId")?.Value;
+            var userIdGuid = new Guid(userId);
+            var task = await service.GetTask(id, userIdGuid);
             if (task == null)
             {
                 return NotFound();
@@ -35,35 +39,41 @@ namespace Api.Controllers.Task
             var responce = new TaskResponse(task.id, task.TaskName, task.taskStatus);
             return Ok(responce);
         }
-        //   [Authorize]
-        /*[HttpGet("user/{userId:guid}")]
-        public async Task<ActionResult<List<TaskResponse>>> GetUserTasks(Guid userId)
+        [Authorize]
+        [HttpGet("user")]
+        public async Task<ActionResult<List<TaskResponse>>> GetUserTasks()
         {
-            var tasks = await service.GetUserTasks(userId);
+            var userId = User.FindFirst("userId")?.Value;
+            var userIdGuid = new Guid(userId);
+            var tasks = await service.GetUserTasks(userIdGuid);
             if (tasks == null)
             {
                 return NotFound();
             }
             var responce = tasks.Select(r => new TaskResponse(r.id, r.TaskName, r.taskStatus));
             return Ok(responce);
-        }*/
-        //     [Authorize]
+        }
+             [Authorize]
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<Guid>> CreateTask([FromBody] TaskRequest request)
         {
-            Guid id = Guid.NewGuid();
-            var result = await service.CreateTask(request);
+            var userId = User.FindFirst("userId")?.Value;
+            var userIdGuid = new Guid(userId);
+            var result = await service.CreateTask(request,userIdGuid);
             if (!result.Success)
             {
                 return BadRequest(result.ErrorMessage);
             }
-            return Ok(id);
+            return Ok(result);//Yagni we can return here id in result model, but right now its bullshit
         }
-        //    [Authorize]
         [HttpPut("{id:guid}")]
+        [Authorize]
         public async Task<ActionResult<Guid>> UpdateTask(Guid id, [FromBody] TaskRequest request)
         {
-            var result = await service.UpdateTask(id, request);
+            var userId = User.FindFirst("userId")?.Value;
+            var userIdGuid = new Guid(userId);
+            var result = await service.UpdateTask(id, userIdGuid, request);
             if (result == null)
             {
                 return NotFound();
@@ -74,11 +84,13 @@ namespace Api.Controllers.Task
             }
             return Ok(id);
         }
-        //       [Authorize]
         [HttpDelete("{id:guid}")]
+        [Authorize]
         public async Task<ActionResult<ResultModel>> DeleteTask(Guid id)
         {
-            var result = await service.DeleteTask(id);
+            var userId = User.FindFirst("userId")?.Value;
+            var userIdGuid = new Guid(userId);
+            var result = await service.DeleteTask(id, userIdGuid);
             if (result == null)
             {
                 return NotFound();

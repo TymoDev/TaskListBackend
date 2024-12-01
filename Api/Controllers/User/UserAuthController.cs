@@ -19,29 +19,52 @@ namespace Api.Controllers.User
             this.httpContextAccessor = httpContextAccessor;
         }
         [HttpPost("register")]
-        public async Task<IActionResult> Register(UserRequest request)
+        public async Task<IActionResult> Register(RegisterUserRequest request)
         {
-            //Registration user
             Guid id = Guid.NewGuid();
             var httpContext = httpContextAccessor.HttpContext;
-            var result = await auth.Register(id,request);
-            if (!result.Success)
+            try
             {
-                return BadRequest(result.ErrorMessage);
-            }
-            var token = result.Token;
+                var result = await auth.Register(id, request);
 
-            //Save token in cookies
-            httpContext.Response.Cookies.Append("tasty-cookies", token);
-            return Ok(id);
+                if (!result.Success)
+                {
+                    return BadRequest(result.ErrorMessage);
+                }
+
+                var token = result.Token;
+
+                // Збереження токена в cookies
+                httpContext.Response.Cookies.Append("tasty-cookies", token);
+                return Ok(id);
+            }
+            catch (Microsoft.EntityFrameworkCore.DbUpdateException ex) 
+            {
+                return Conflict(new
+                {
+                    Status = 409,
+                    Error = "Conflict",
+                    Message = "The email or username already exists. Please choose a different value."
+                });
+            }
+            catch (Exception ex) 
+            {
+                return StatusCode(500, new
+                {
+                    Status = 500,
+                    Error = "Internal Server Error",
+                    Message = ex.Message
+                });
+            }
         }
 
+
         [HttpPost("login")]
-        public async Task<IActionResult> Login(UserRequest request )
+        public async Task<IActionResult> Login(LoginUserRequest request )
         {
             //Create token,Check e-mail and password
             var httpContext = httpContextAccessor.HttpContext;
-            var tokenResultModel = await auth.Login(new UserRequest(request.Username,request.Email,request.Password));
+            var tokenResultModel = await auth.Login(new LoginUserRequest(request.Email,request.Password));
             if (!tokenResultModel.Success)
             {
                 return BadRequest(tokenResultModel.ErrorMessage);

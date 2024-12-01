@@ -33,7 +33,7 @@ namespace DataAccess.Repositories.RepositoriesTb
             }
             return new TaskResponse(task.Id, task.TaskName, task.TaskStatus);
         }
-       /* public async Task<List<TaskResponse?>> GetByUserTask(Guid userId)
+        public async Task<List<TaskResponse?>> GetByUserTask(Guid userId)
         {
             var user = await context.Users.FindAsync(userId);
             if (user == null)
@@ -49,20 +49,20 @@ namespace DataAccess.Repositories.RepositoriesTb
                 return null;
             }
             return task;
-        }*/
-        public async Task<Guid?> CreateTask(Guid TaskId, string taskName, string taskStatus/*Guid userId*/)
+        }
+        public async Task<Guid?> CreateTask(Guid TaskId, string taskName, string taskStatus,Guid userId)
         {
-            /*var user = await context.Users.FindAsync(userId);
+            var user = await context.Users.FindAsync(userId);
             if (user == null)
             {
                 return null;
-            }*/
+            }
             var userEntity = new TaskEntity
             {
                 Id = TaskId,
                 TaskName = taskName,
                 TaskStatus = taskStatus,
-                //UserId = userId
+                UserId = userId
             };
             return await Create(userEntity);
 
