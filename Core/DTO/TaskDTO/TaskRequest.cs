@@ -10,6 +10,5 @@ namespace Core.DTO.TaskDTO
         (
           string TaskName,
           string TaskStatus
-          //string UserId
         );
 }

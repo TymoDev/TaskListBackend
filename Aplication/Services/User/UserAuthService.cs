@@ -25,7 +25,7 @@ namespace Aplication.Services.User
             this.hasher = hasher;
             this.jwtProvider = jwtProvider;
         }
-        public async Task<LoginResultModel> Register(Guid id,UserRequest request)
+        public async Task<LoginResultModel> Register(Guid id,RegisterUserRequest request)
         {
             var userModelResult = UsernameModel.Create(request.Username);
             if (!userModelResult.Success)
@@ -45,7 +45,7 @@ namespace Aplication.Services.User
             return LoginResultModel.Ok(token);
         }
 
-        public async Task<LoginResultModel> Login(UserRequest request)
+        public async Task<LoginResultModel> Login(LoginUserRequest request)
         {
             var user = await repository.GetUserByEmail(request.Email);
             if (user == null)

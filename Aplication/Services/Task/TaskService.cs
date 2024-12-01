@@ -20,8 +20,14 @@ namespace BusinessLogic.Services
             return tasks;
         }
 
-        public async Task<TaskResponse?> GetTask(Guid id)
+        public async Task<TaskResponse?> GetTask(Guid id,Guid userId)
         {
+            var userTasks = await repository.GetByUserTask(userId);
+            var isUserTask = userTasks.FirstOrDefault(ut => ut.id == id);
+            if (isUserTask == null)
+            {
+               return null; //add here result model with data in future
+            }
             var response = await repository.GetByIdTask(id);
             if (response == null)
             {
@@ -30,7 +36,7 @@ namespace BusinessLogic.Services
             return response;
         }
 
-       /* public async Task<List<TaskResponse?>> GetUserTasks(Guid userId)
+        public async Task<List<TaskResponse?>> GetUserTasks(Guid userId)
         {
             var response = await repository.GetByUserTask(userId);
             if (response == null)
@@ -38,16 +44,10 @@ namespace BusinessLogic.Services
                 return null;
             }
             return response;
-        }*/
+        }
 
-        public async Task<ResultModel> CreateTask(TaskRequest request)
+        public async Task<ResultModel> CreateTask(TaskRequest request,Guid userId)
         {
-            /* Guid userId;
-
-             if (!Guid.TryParse(request.UserId, out userId))
-             {
-                 return ResultModel.Error("Incorrect format");
-             }*/
 
             var response = TaskModel.Create(request.TaskName, request.TaskStatus);
             if (!response.Success)
@@ -55,7 +55,7 @@ namespace BusinessLogic.Services
                 return ResultModel.Error(response.ErrorMessage);
             }
 
-            var responseService = await repository.CreateTask(Guid.NewGuid(), request.TaskName, request.TaskStatus/* userId*/);
+            var responseService = await repository.CreateTask(Guid.NewGuid(), request.TaskName, request.TaskStatus, userId);
             if (responseService == null)
             {
                 return ResultModel.Error("BadRequest");
@@ -64,8 +64,14 @@ namespace BusinessLogic.Services
             return ResultModel.Ok();
         }
 
-        public async Task<ResultModel?> UpdateTask(Guid id, TaskRequest request)
+        public async Task<ResultModel?> UpdateTask(Guid id,Guid userId, TaskRequest request)
         {
+            var userTasks = await repository.GetByUserTask(userId);
+            var isUserTask = userTasks.FirstOrDefault(ut => ut.id == id);
+            if (isUserTask == null)
+            {
+                return ResultModel.Error("Sorry, but user don't have this task");
+            }
             var response = TaskModel.Create(request.TaskName, request.TaskStatus);
             if (!response.Success)
             {
@@ -80,8 +86,14 @@ namespace BusinessLogic.Services
             return ResultModel.Ok();
         }
 
-        public async Task<ResultModel?> DeleteTask(Guid id)
+        public async Task<ResultModel?> DeleteTask(Guid id, Guid userId)
         {
+            var userTasks = await repository.GetByUserTask(userId);
+            var isUserTask = userTasks.FirstOrDefault(ut => ut.id == id);
+            if (isUserTask == null)
+            {
+                return ResultModel.Error("Sorry, but user don't have this task");
+            }
             var result = await repository.DeleteTask(id);
             if (result == null)
             {

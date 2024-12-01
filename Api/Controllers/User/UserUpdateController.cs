@@ -17,7 +17,7 @@ namespace Api.Controllers.User
             this.service = service;
         }
         [HttpPut("{id:guid}")]
-        public async Task<ActionResult<Guid>> UpdateUser(Guid id, [FromBody] UserRequest request)
+        public async Task<ActionResult<Guid>> UpdateUser(Guid id, [FromBody] RegisterUserRequest request)
         {
             ResultModel result;
             try

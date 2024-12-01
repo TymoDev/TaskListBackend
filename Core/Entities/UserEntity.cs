@@ -13,6 +13,6 @@ namespace Core.Entities
         public required string Email { get; set; }
         public required string PasswordHash { get; set; }
         
-      //  public List<TaskEntity>? Tasks { get; set; }
+        public List<TaskEntity>? Tasks { get; set; }
     }
 }

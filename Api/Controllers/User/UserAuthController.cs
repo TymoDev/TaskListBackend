@@ -19,7 +19,7 @@ namespace Api.Controllers.User
             this.httpContextAccessor = httpContextAccessor;
         }
         [HttpPost("register")]
-        public async Task<IActionResult> Register(UserRequest request)
+        public async Task<IActionResult> Register(RegisterUserRequest request)
         {
             Guid id = Guid.NewGuid();
             var httpContext = httpContextAccessor.HttpContext;
@@ -60,11 +60,11 @@ namespace Api.Controllers.User
 
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(UserRequest request )
+        public async Task<IActionResult> Login(LoginUserRequest request )
         {
             //Create token,Check e-mail and password
             var httpContext = httpContextAccessor.HttpContext;
-            var tokenResultModel = await auth.Login(new UserRequest(request.Username,request.Email,request.Password));
+            var tokenResultModel = await auth.Login(new LoginUserRequest(request.Email,request.Password));
             if (!tokenResultModel.Success)
             {
                 return BadRequest(tokenResultModel.ErrorMessage);

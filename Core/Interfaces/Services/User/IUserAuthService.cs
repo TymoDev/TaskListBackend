@@ -6,7 +6,7 @@ namespace Aplication.Services.User
 {
     public interface IUserAuthService
     {
-        Task<LoginResultModel> Login(UserRequest request);
-        Task<LoginResultModel> Register(Guid id,UserRequest request);
+        Task<LoginResultModel> Login(LoginUserRequest request);
+        Task<LoginResultModel> Register(Guid id,RegisterUserRequest request);
     }
 }
