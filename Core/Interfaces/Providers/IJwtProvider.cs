@@ -1,10 +1,10 @@
 ﻿using Core.DTO.UserDTO.Responce;
 using Core.Entities;
 
-namespace Infrastracture.Logic
+namespace Core.Interfaces.Providers
 {
     public interface IJwtProvider
     {
-        string GenerateToken(UserResponcePassword user);
+        string GenerateAuthenticateToken(UserResponcePassword user);
     }
 }

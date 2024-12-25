@@ -13,7 +13,7 @@ namespace Core.Interfaces.Repositories
     {
         public  Task<List<UserResponcePassword>> GetUsers();
         public  Task<UserResponcePassword?> GetUserById(Guid id);
-        public Task<UserResponcePassword?> GetUserByEmail(string email);
+        public Task<UserResponcePassword?> GetUserByEmailOrUsername(string login);
         public  Task<Guid?> UpdateUser(UserRequestHash user);
         public  Task<Guid?> CreateUser(UserRequestHash user);
         public  Task<Guid?> DeleteUser(Guid id);

@@ -1,4 +1,6 @@
-﻿using Infrastracture.Logic.Authentication;
+﻿using Infrastracture.Authentication;
+using Infrastracture.EmailLogic;
+using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -38,5 +40,16 @@ namespace Api.Extensions
 
             services.AddAuthorization();
         }
+        public static void AddApiRedis(this IServiceCollection services, IConfiguration configuration)
+        {
+            var jwtOptions = configuration.GetSection("JwtOptions").Get<JwtOptions>();
+
+            services.AddStackExchangeRedisCache(options =>
+            {
+                string connection = configuration.GetConnectionString("Redis");
+                options.Configuration = connection;
+            });
+        }
+
     }
 }

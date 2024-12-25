@@ -1,15 +1,9 @@
 ﻿using Core.DTO.UserDTO;
-using Core.DTO.UserDTO.Request;
+using Core.Interfaces.Providers;
 using Core.Interfaces.Repositories;
 using Core.ResultModels;
 using Core.ValidationModels.User;
 using Infrastracture.Logic;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Aplication.Services.User
 {
@@ -41,23 +35,24 @@ namespace Aplication.Services.User
             var hashedPassword = hasher.Generate(request.Password);
             await repository.CreateUser(new UserRequestHash(id, request.Username, request.Email, hashedPassword));
             var user = await repository.GetUserById(id);
-            var token = jwtProvider.GenerateToken(user);
+            var token = jwtProvider.GenerateAuthenticateToken(user);
             return LoginResultModel.Ok(token);
         }
 
         public async Task<LoginResultModel> Login(LoginUserRequest request)
         {
-            var user = await repository.GetUserByEmail(request.Email);
+            
+            var user = await repository.GetUserByEmailOrUsername(request.Login); 
             if (user == null)
             {
-                return LoginResultModel.Error("BadRequest");
+                return LoginResultModel.Error("BadRequest with data");
             }
-            var result = hasher.Verify(request.Password, user.Password.ToString());
+            bool result = hasher.Verify(request.Password, user.Password.ToString());
             if (result == false)
             {
                 return LoginResultModel.Error("Incorrect password");
             }
-            var token = jwtProvider.GenerateToken(user);
+            var token = jwtProvider.GenerateAuthenticateToken(user);
             return LoginResultModel.Ok(token);
 
         }

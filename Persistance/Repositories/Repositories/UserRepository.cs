@@ -28,9 +28,9 @@ namespace Persistance.Repositories.Repositories
         {
             return await GetById(id,u => new UserResponcePassword(u.Id, u.UserName, u.Email,u.PasswordHash));
         }
-        public async Task<UserResponcePassword?> GetUserByEmail(string email)
+        public async Task<UserResponcePassword?> GetUserByEmailOrUsername(string login)
         {
-            var user = await context.Users.SingleOrDefaultAsync(u => u.Email == email);
+            var user = await context.Users.SingleOrDefaultAsync(u => u.Email == login || u.UserName == login);
             if (user == null)
             {
                 return null;
@@ -77,5 +77,6 @@ namespace Persistance.Repositories.Repositories
             return await Delete(id);
         }
 
+        
     }
 }

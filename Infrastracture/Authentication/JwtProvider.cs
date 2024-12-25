@@ -1,5 +1,6 @@
 ﻿using Core.DTO.UserDTO.Responce;
 using Core.Entities;
+using Core.Interfaces.Providers;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -10,7 +11,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infrastracture.Logic.Authentication
+namespace Infrastracture.Authentication
 {
     public class JwtProvider : IJwtProvider
     {
@@ -22,7 +23,7 @@ namespace Infrastracture.Logic.Authentication
             this.options = options.Value;
         }
 
-        public string GenerateToken(UserResponcePassword user)
+        public string GenerateAuthenticateToken(UserResponcePassword user)
         {
             Claim[] claims = [new("userId", user.Id.ToString())];
             var signingCredentials = new SigningCredentials(

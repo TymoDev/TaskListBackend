@@ -35,10 +35,10 @@ namespace Api.Controllers.User
             return Ok(responce);
 
         }
-        [HttpGet("{email}")]
-        public async Task<ActionResult<UserResponcePassword>> GetUserByEmail(string email)
+        [HttpGet("{login}")]
+        public async Task<ActionResult<UserResponcePassword>> GetUserByEmailOrLogin(string login)
         {
-            var userResponse = await service.GetUserByEmail(email);
+            var userResponse = await service.GetUserByEmailOrLogin(login);
             if (userResponse == null)
             {
                 return NotFound();

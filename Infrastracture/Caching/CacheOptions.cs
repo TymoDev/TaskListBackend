@@ -4,7 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.DTO.UserDTO
+namespace Infrastracture.Caching
 {
-    public record LoginUserRequest(string Login,string Password);
+    public class CacheOptions
+    {
+        public int ExpiresMinutes { get; set; }
+    }
 }

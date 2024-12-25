@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.DTO.UserDTO
+namespace Core.DTO.UserDTO.Request
 {
-    public record LoginUserRequest(string Login,string Password);
+    public record ResetPasswordVerifyRequest(string Email, int Code);
 }

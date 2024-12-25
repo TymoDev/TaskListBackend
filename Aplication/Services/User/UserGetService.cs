@@ -33,9 +33,9 @@ namespace Aplication.Services
             }
             return responce;
         }
-        public async Task<UserResponcePassword?> GetUserByEmail(string email)
+        public async Task<UserResponcePassword?> GetUserByEmailOrLogin(string login)
         {
-            var responce = await repository.GetUserByEmail(email);
+            var responce = await repository.GetUserByEmailOrUsername(login);
             if (responce == null)
             {
                 return null;

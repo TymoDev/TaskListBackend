@@ -1,7 +1,9 @@
 ﻿using Aplication.Services.User;
 using Core.DTO.UserDTO;
 using Core.DTO.UserDTO.Request;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers.User
@@ -13,9 +15,9 @@ namespace Api.Controllers.User
         private readonly IUserAuthService auth;
         private readonly IHttpContextAccessor httpContextAccessor;
 
-        public UserAuthController(IUserAuthService auth, IHttpContextAccessor httpContextAccessor)
+        public UserAuthController(IUserAuthService authService, IHttpContextAccessor httpContextAccessor)
         {
-            this.auth = auth;
+            this.auth = authService;
             this.httpContextAccessor = httpContextAccessor;
         }
         [HttpPost("register")]
@@ -60,11 +62,11 @@ namespace Api.Controllers.User
 
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginUserRequest request )
+        public async Task<IActionResult> Login(LoginUserRequest request)
         {
             //Create token,Check e-mail and password
             var httpContext = httpContextAccessor.HttpContext;
-            var tokenResultModel = await auth.Login(new LoginUserRequest(request.Email,request.Password));
+            var tokenResultModel = await auth.Login(new LoginUserRequest(request.Login,request.Password));
             if (!tokenResultModel.Success)
             {
                 return BadRequest(tokenResultModel.ErrorMessage);
@@ -73,9 +75,14 @@ namespace Api.Controllers.User
 
             //Save token in cookies
             httpContext.Response.Cookies.Append("tasty-cookies",token);
-            return Ok(request.Email);
+            return Ok(request.Login);
         }
 
-
+        [HttpGet]
+        [Authorize]
+        public IActionResult TryAuthUser()
+        {
+            return Ok();
+        }
     }
 }
