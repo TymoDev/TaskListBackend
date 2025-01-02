@@ -65,7 +65,6 @@ namespace DataAccess.Repositories.RepositoriesTb
                 UserId = userId
             };
             return await Create(userEntity);
-
         }
         public async Task<Guid?> UpdateTask(Guid id, string taskName, string taskStatus)
         {

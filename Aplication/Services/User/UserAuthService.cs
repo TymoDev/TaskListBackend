@@ -19,7 +19,7 @@ namespace Aplication.Services.User
             this.hasher = hasher;
             this.jwtProvider = jwtProvider;
         }
-        public async Task<LoginResultModel> Register(Guid id,RegisterUserRequest request)
+        public async Task<LoginResultModel> Register(Guid id,RegisterUserRequest request)//add email validation
         {
             var userModelResult = UsernameModel.Create(request.Username);
             if (!userModelResult.Success)

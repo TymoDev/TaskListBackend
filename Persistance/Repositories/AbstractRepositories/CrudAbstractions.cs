@@ -32,7 +32,7 @@ namespace Persistance.Repositories.AbstractRepositories
         {
            await dbSet.AddAsync(entity);
            await context.SaveChangesAsync();
-           return ((dynamic)entity).Id; 
+           return ((dynamic)entity).Id;
         }
         public async Task<Guid> Update(Guid id, Action<TEntity> updateAction)
         {
