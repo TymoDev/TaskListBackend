@@ -17,9 +17,9 @@ namespace Api.Controllers.User
             this.service = service;
         }
         [HttpPost("reset/password")]
-        public async Task<IActionResult> ResetPasswordCodeCreate(string email)
+        public async Task<IActionResult> ResetPasswordCodeCreate( ResetPasswordRequest request)
         {
-            var result =await service.ResetPasswordNotify(email);
+            var result = await service.ResetPasswordNotify(request.Email);
             return Ok();
         }
         [HttpPost("reset/password/code")]
