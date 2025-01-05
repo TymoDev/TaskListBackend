@@ -8,11 +8,11 @@ namespace Api.Controllers.Task
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class TaskController : ControllerBase
+    public class TasksController : ControllerBase
     {
         private readonly ITaskService service;
 
-        public TaskController(ITaskService service)
+        public TasksController(ITaskService service)
         {
             this.service = service;
         }

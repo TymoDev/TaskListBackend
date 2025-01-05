@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CoreTests
+namespace CoreTests.User
 {
     internal class UserPasswordModelTests
     {

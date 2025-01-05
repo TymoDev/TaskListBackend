@@ -7,6 +7,7 @@
     <UserSecretsId>639f5b77-4d6b-427e-a7d3-bb0bd2094762</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerfileContext>.</DockerfileContext>
+	<PreserveCompilationContext>true</PreserveCompilationContext>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,6 +20,10 @@
     <ProjectReference Include="..\Core\Core.csproj" />
     <ProjectReference Include="..\Infrastracture\Infrastracture.csproj" />
     <ProjectReference Include="..\Persistance\Persistance.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Middlewares\" />
   </ItemGroup>
 
 </Project>

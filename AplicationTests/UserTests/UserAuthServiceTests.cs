@@ -8,7 +8,7 @@ using Moq;
 
 namespace AplicationTests.UserTests
 {
-    public class UserAuthTests
+    public class UserAuthServiceTests
     {
         private Mock<IUserRepository> _mockUserRepository;
         private Mock<IPasswordHasher> _mockPasswordHasher;
