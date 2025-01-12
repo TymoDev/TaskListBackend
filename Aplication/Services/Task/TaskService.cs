@@ -41,36 +41,38 @@ namespace BusinessLogic.Services
             return response;
         }
 
-        public async Task<ResultModel> CreateTask(TaskRequest request,Guid userId)
+        public async Task<ResultModelObject<TaskResponse>> CreateTask(TaskRequest request,Guid userId)
         {
 
             var response = TaskModel.Create(request.TaskName, request.TaskStatus);
             if (!response.Success)
             {
-                return ResultModel.Error(response.ErrorMessage);
+                return ResultModelObject<TaskResponse>.Error(response.ErrorMessage);
             }
 
-            var responseService = await repository.CreateTask(Guid.NewGuid(), request.TaskName, request.TaskStatus, userId);
-            if (responseService == null)
+            var serviceResponce = await repository.CreateTask(Guid.NewGuid(), request.TaskName, request.TaskStatus, userId);
+            if (response == null)
             {
-                return ResultModel.Error("Bad Request");
+                return ResultModelObject<TaskResponse>.Error("Bad Request");
             }
 
-            return ResultModel.Ok();
+            var taskResponse = new TaskResponse(serviceResponce.id, request.TaskName, request.TaskStatus);
+
+            return ResultModelObject<TaskResponse>.Ok(taskResponse);
         }
 
-        public async Task<ResultModel?> UpdateTask(Guid id,Guid userId, TaskRequest request)
+        public async Task<ResultModelObject<TaskResponse?>> UpdateTask(Guid id,Guid userId, TaskRequest request)
         {
             var userTasks = await repository.GetByUserTask(userId);
             var isUserTaskExist = userTasks.FirstOrDefault(ut => ut.id == id);
             if (isUserTaskExist == null)
             {
-                return ResultModel.Error("Sorry, but user don't have this task");
+                return ResultModelObject<TaskResponse?>.Error("Sorry, but user don't have this task");
             }
             var response = TaskModel.Create(request.TaskName, request.TaskStatus);
             if (!response.Success)
             {
-                return ResultModel.Error(response.ErrorMessage);
+                return ResultModelObject<TaskResponse?>.Error(response.ErrorMessage);
             }
 
             var result = await repository.UpdateTask(id, request.TaskName, request.TaskStatus);
@@ -78,7 +80,7 @@ namespace BusinessLogic.Services
             {
                 return null;
             }
-            return ResultModel.Ok();
+            return ResultModelObject<TaskResponse?>.Ok(result);
         }
 
         public async Task<ResultModel?> DeleteTask(Guid id, Guid userId)

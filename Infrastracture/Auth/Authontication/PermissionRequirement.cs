@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.DTO.UserDTO.Request
+namespace Infrastracture.Auth.Authontication
 {
-    public record ResetPasswordRequest(string Email,string Password);
+    internal class PermissionRequirement
+    {
+    }
 }

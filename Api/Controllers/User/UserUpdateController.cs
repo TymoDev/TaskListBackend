@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Api.Controllers.User
 {
     [ApiController]
-    [Route("update/[controller]")]
+    [Route("api/update/[controller]")]
     public class UserUpdateController : ControllerBase
     {
         private readonly IUserUpdateService service;
@@ -51,6 +51,22 @@ namespace Api.Controllers.User
                 return BadRequest(result.ErrorMessage);
             }
             return Ok(id);
+        }
+        [HttpPut]
+        public async Task<ActionResult<string>> UpdateUserPassword(ResetPasswordRequest request)
+        {
+            ResultModel result;
+            result = await service.UpdateUserPassword(request);
+            
+            if (result == null)
+            {
+                return NotFound();
+            }
+            if (!result.Success)
+            {
+                return BadRequest(result.ErrorMessage);
+            }
+            return Ok(request.Email);
         }
 
         [HttpDelete("{id:guid}")]

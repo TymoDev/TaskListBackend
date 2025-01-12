@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Infrastracture.Authentication
+namespace Infrastracture.Auth.Authentication
 {
     public class PasswordHasher : IPasswordHasher
     {

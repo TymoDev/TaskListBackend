@@ -1,4 +1,5 @@
 ﻿using Core.DTO.UserDTO;
+using Core.DTO.UserDTO.Request;
 using Core.DTO.UserDTO.Responce;
 using Core.Entities;
 using System;
@@ -15,6 +16,7 @@ namespace Core.Interfaces.Repositories
         public  Task<UserResponcePassword?> GetUserById(Guid id);
         public Task<UserResponcePassword?> GetUserByEmailOrUsername(string login);
         public  Task<Guid?> UpdateUser(UserRequestHash user);
+        Task<string?> UpdateUserPassword(string email, string password);
         public  Task<Guid?> CreateUser(UserRequestHash user);
         public  Task<Guid?> DeleteUser(Guid id);
         

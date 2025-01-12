@@ -4,7 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.DTO.UserDTO.Request
+namespace Core.Enums
 {
-    public record ResetPasswordRequest(string Email,string Password);
+    public enum Role
+    {
+        Admin = 1,
+        User = 2
+    }
 }

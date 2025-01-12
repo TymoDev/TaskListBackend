@@ -8,5 +8,6 @@ namespace Aplication.Services.User
     {
         Task<ResultModel?> DeleteUser(Guid id);
         Task<ResultModel?> UpdateUser(UserRequestId request);
+        Task<ResultModel?> UpdateUserPassword(ResetPasswordRequest request);
     }
 }

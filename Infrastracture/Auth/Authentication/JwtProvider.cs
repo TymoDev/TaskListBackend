@@ -16,23 +16,24 @@ namespace Infrastracture.Authentication
     public class JwtProvider : IJwtProvider
     {
         //Creating token
-        private readonly JwtOptions options;
+        string secretKey = Environment.GetEnvironmentVariable("JWT_SECRET_KEY");
+        double expiresHoursStr = Convert.ToDouble(Environment.GetEnvironmentVariable("JWT_EXPIRES_HOURS"));
 
-        public JwtProvider(IOptions<JwtOptions> options)
+
+        public JwtProvider()
         {
-            this.options = options.Value;
         }
 
         public string GenerateAuthenticateToken(UserResponcePassword user)
         {
             Claim[] claims = [new("userId", user.Id.ToString())];
             var signingCredentials = new SigningCredentials(
-                 new SymmetricSecurityKey(Encoding.UTF8.GetBytes(options.SecretKey)),
+                 new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
                  SecurityAlgorithms.HmacSha256);
             var token = new JwtSecurityToken(
                  claims: claims,
                  signingCredentials: signingCredentials,
-                 expires: DateTime.UtcNow.AddHours(options.ExpiresHours)
+                 expires: DateTime.UtcNow.AddHours(expiresHoursStr)
                 );
             var tokenValue = new JwtSecurityTokenHandler().WriteToken(token);
             return tokenValue;

@@ -1,4 +1,5 @@
 ﻿using Core.DTO.UserDTO;
+using Core.DTO.UserDTO.Request;
 using Core.DTO.UserDTO.Responce;
 using Core.Entities;
 using Core.Interfaces.Repositories;
@@ -51,9 +52,17 @@ namespace Persistance.Repositories.Repositories
                 OldData.PasswordHash = userData.PasswordHash;
                 OldData.Email = userData.Email;
             });
-
-
-
+        }
+        public async Task<string?> UpdateUserPassword(string email,string password)
+        {
+            var user = await context.Users.SingleOrDefaultAsync(u => u.Email == email);
+            if(user == null)
+            {
+                return null;
+            }
+            user.PasswordHash = password;
+            await context.SaveChangesAsync();
+            return user.Email;        
         }
         public async Task<Guid?> CreateUser(UserRequestHash userData)
         {

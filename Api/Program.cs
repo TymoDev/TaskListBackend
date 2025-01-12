@@ -1,16 +1,18 @@
-using Api.Extensions;
+﻿using Api.Extensions;
 using Aplication.Services;
 using Aplication.Services.User;
 using BusinessLogic.Services;
 using Core.Interfaces.Providers;
 using Core.Interfaces.Repositories;
 using DataAccess.Repositories.RepositoriesTb;
+using Infrastracture.Auth.Authentication;
 using Infrastracture.Authentication;
 using Infrastracture.Caching;
 using Infrastracture.CodesGeneration;
 using Infrastracture.EmailLogic;
 using Infrastracture.Logic;
 using Infrastracture.Logic.CodesGeneration;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -43,9 +45,27 @@ builder.Services.AddCors(options =>
         });
 });
 
-builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(nameof(JwtOptions)));
+DotNetEnv.Env.Load();
+builder.Configuration.AddEnvironmentVariables();
+
+
+builder.Services.Configure<JwtOptions>(options =>
+{
+    options.SecretKey = Environment.GetEnvironmentVariable("JWT_SECRET_KEY");
+    options.ExpiresHours = int.Parse(Environment.GetEnvironmentVariable("JWT_EXPIRES_HOURS") ?? "1");
+});
+
+builder.Services.Configure<EmailOptions>(options =>
+{
+    options.SmtpServer = Environment.GetEnvironmentVariable("EMAIL_SMTP_SERVER");
+    options.Port = int.Parse(Environment.GetEnvironmentVariable("EMAIL_PORT") ?? "587");
+    options.UseSsl = bool.Parse(Environment.GetEnvironmentVariable("EMAIL_USE_SSL") ?? "true");
+    options.FromEmail = Environment.GetEnvironmentVariable("EMAIL_FROM");
+    options.Password = Environment.GetEnvironmentVariable("EMAIL_PASSWORD");
+});
 builder.Services.Configure<CacheOptions>(builder.Configuration.GetSection(nameof(CacheOptions)));
-builder.Services.Configure<EmailOptions>(builder.Configuration.GetSection(nameof(EmailOptions)));
+builder.Services.Configure< AuthorizationOptions>(builder.Configuration.GetSection(nameof(AuthorizationOptions)));
+
 
 
 builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();

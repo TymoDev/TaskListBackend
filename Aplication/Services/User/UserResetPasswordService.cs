@@ -32,20 +32,27 @@ namespace Aplication.Services.User
         }
         public async Task<ResultModel> ResetPasswordVerify(string email,int code)
         {
-            var result = await cacher.GetCode(email);
-            if(result == null)
+            try
             {
-                return ResultModel.Error("Incorrect code");
+                var result = await cacher.GetCode(email);
+                if (result == null)
+                {
+                    return ResultModel.Error("Incorrect code");
+                }
+                bool verify = result == code;
+                if (verify)
+                {
+                    return ResultModel.Ok();
+                }
+                else
+                {
+                    return ResultModel.Error("Incorrect code");
+                }
             }
-            bool verify = result == code;
-            if (verify)
+            catch(Exception ex)
             {
-                return ResultModel.Ok();
+                return ResultModel.Error($"Unexpected exeption : {ex}");
             }
-            else
-            {
-                return ResultModel.Error("Incorrect code");
-            }           
         }
     }
 }

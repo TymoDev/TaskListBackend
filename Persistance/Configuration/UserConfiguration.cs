@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace DataAccess.Configurations
 {
-    public class UserConfiguration : IEntityTypeConfiguration<UserEntity>
+    public partial class UserConfiguration : IEntityTypeConfiguration<UserEntity>
     {
         public void Configure(EntityTypeBuilder<UserEntity> builder)
         {
@@ -19,6 +19,12 @@ namespace DataAccess.Configurations
              .IsUnique();
             builder.HasIndex(x => x.Email)
              .IsUnique();
+            builder.HasMany(u => u.Roles)
+                .WithMany(u => u.Users)
+                .UsingEntity<UserRoleEntity>(
+                  l => l.HasOne<RoleEntity>().WithMany().HasForeignKey(r => r.RoleId),
+                  r => r.HasOne<UserEntity>().WithMany().HasForeignKey(u => u.UserId)
+                );
         }
     }
 }

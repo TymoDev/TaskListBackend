@@ -50,7 +50,7 @@ namespace DataAccess.Repositories.RepositoriesTb
             }
             return task;
         }
-        public async Task<Guid?> CreateTask(Guid TaskId, string taskName, string taskStatus,Guid userId)
+        public async Task<TaskResponse?> CreateTask(Guid TaskId, string taskName, string taskStatus,Guid userId)
         {
             var user = await context.Users.FindAsync(userId);
             if (user == null)
@@ -64,21 +64,24 @@ namespace DataAccess.Repositories.RepositoriesTb
                 TaskStatus = taskStatus,
                 UserId = userId
             };
-            return await Create(userEntity);
+            await Create(userEntity);
+            return new TaskResponse(TaskId,taskName,taskStatus);
         }
-        public async Task<Guid?> UpdateTask(Guid id, string taskName, string taskStatus)
+        public async Task<TaskResponse?> UpdateTask(Guid id, string taskName, string taskStatus)
         {
             var task = await GetById(id, u => u);
             if (task == null)
             {
                 return null;
             }
-            return await Update(id, task =>
+            await Update(id, task =>
             {
                 task.Id = id;
                 task.TaskName = taskName;
                 task.TaskStatus = taskStatus;
             });
+            return new TaskResponse(id, taskName, taskStatus);
+
         }
         public async Task<Guid?> DeleteTask(Guid id)
         {

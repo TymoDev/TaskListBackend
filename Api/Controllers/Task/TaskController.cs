@@ -65,11 +65,12 @@ namespace Api.Controllers.Task
             {
                 return BadRequest(result.ErrorMessage);
             }
-            return Ok(result);//Yagni we can return here id in result model, but right now its bullshit
+            return Ok(result.Data);
         }
+
         [HttpPut("{id:guid}")]
         [Authorize]
-        public async Task<ActionResult<Guid>> UpdateTask(Guid id, [FromBody] TaskRequest request)
+        public async Task<ActionResult<TaskResponse>> UpdateTask(Guid id, [FromBody] TaskRequest request)
         {
             var userId = User.FindFirst("userId")?.Value;
             var userIdGuid = new Guid(userId);
@@ -82,11 +83,12 @@ namespace Api.Controllers.Task
             {
                 return BadRequest(result.ErrorMessage);
             }
-            return Ok(id);
+            return Ok(result);
         }
+
         [HttpDelete("{id:guid}")]
         [Authorize]
-        public async Task<ActionResult<ResultModel>> DeleteTask(Guid id)
+        public async Task<ActionResult<Guid>> DeleteTask(Guid id)
         {
             var userId = User.FindFirst("userId")?.Value;
             var userIdGuid = new Guid(userId);
@@ -95,7 +97,7 @@ namespace Api.Controllers.Task
             {
                 return NotFound();
             }
-            return Ok(result);
+            return Ok(id);
         }
     }
 }

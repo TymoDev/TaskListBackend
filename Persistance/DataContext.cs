@@ -1,26 +1,23 @@
 ﻿using Core.Entities;
 using DataAccess.Configurations;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
+using Persistance.Configuration;
+using Persistance.Options;
 
 namespace Persistance
 {
-    public class DataContext : DbContext
+    public class DataContext(
+        DbContextOptions<DataContext> options,
+        IOptions<AuthorizationOptions> authOptions) : DbContext(options)
     {
-        public DataContext(DbContextOptions<DataContext> options) : base(options)
-        {
-        }
-
         public DbSet<UserEntity> Users { get; set; }
         public DbSet<TaskEntity> Tasks { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.ApplyConfiguration(new UserConfiguration());
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(DataContext).Assembly);
+            modelBuilder.ApplyConfiguration(new RolePermissionConfiguration(authOptions.Value));
             base.OnModelCreating(modelBuilder);
         }
     }

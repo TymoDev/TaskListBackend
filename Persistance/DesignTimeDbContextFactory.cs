@@ -2,10 +2,10 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
+using Microsoft.Extensions.Options;
+using Persistance.Options;
+
 
 namespace Persistance
 {
@@ -17,7 +17,13 @@ namespace Persistance
             var builder = new DbContextOptionsBuilder<DataContext>();
             var connectionString = configuration.GetConnectionString("DbConnection");
             builder.UseSqlite(connectionString);
-            return new DataContext(builder.Options);
+
+            var authorizationOptions = new AuthorizationOptions();
+            configuration.GetSection("AuthorizationOptions").Bind(authorizationOptions);
+
+            IOptions<AuthorizationOptions> optionsWrapper = Microsoft.Extensions.Options.Options.Create(authorizationOptions);
+
+            return new DataContext(builder.Options, optionsWrapper);
         }
     }
 }

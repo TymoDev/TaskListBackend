@@ -25,10 +25,10 @@ namespace Aplication.Services.User
         }
         public async Task<ResultModel?> UpdateUser(UserRequestId request)
         {
-            var userModelResult = UsernameModel.Create(request.Username);
-            if (!userModelResult.Success)
+            var validationResult = UsernameModel.Create(request.Username);
+            if (!validationResult.Success)
             {
-                return ResultModel.Error(userModelResult.ErrorMessage);
+                return ResultModel.Error(validationResult.ErrorMessage);
             }
             var passwordModelResult = UserPasswordModel.Create(request.Password);
             if (!passwordModelResult.Success)
@@ -38,6 +38,21 @@ namespace Aplication.Services.User
             var passwordHash = hasher.Generate(request.Password); 
             var result = await repository.UpdateUser(new UserRequestHash(request.id, request.Username, request.Email, passwordHash));
             if (result == null)
+            {
+                return null;
+            }
+            return ResultModel.Ok();
+        }
+        public async Task<ResultModel?> UpdateUserPassword(ResetPasswordRequest request)
+        {
+            var validationResult = UserPasswordModel.Create(request.Password);
+            if (!validationResult.Success)
+            {
+                return ResultModel.Error(validationResult.ErrorMessage);
+            }
+            var passwordHash = hasher.Generate(request.Password);
+            var result = await repository.UpdateUserPassword(request.Email,passwordHash);
+            if(result == null)
             {
                 return null;
             }

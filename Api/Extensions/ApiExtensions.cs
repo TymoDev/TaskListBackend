@@ -1,4 +1,4 @@
-﻿using Infrastracture.Authentication;
+﻿using Infrastracture.Auth.Authentication;
 using Infrastracture.EmailLogic;
 using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -13,7 +13,7 @@ namespace Api.Extensions
         //Configure Authentication
         public static void AddApiAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
-            var jwtOptions = configuration.GetSection("JwtOptions").Get<JwtOptions>();
+            var secretKey = Environment.GetEnvironmentVariable("JWT_SECRET_KEY");
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
@@ -24,7 +24,7 @@ namespace Api.Extensions
                         ValidateAudience = false,
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.SecretKey))
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
                     };
                     options.Events = new JwtBearerEvents
                     {
