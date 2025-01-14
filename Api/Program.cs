@@ -2,10 +2,12 @@
 using Aplication.Services;
 using Aplication.Services.User;
 using BusinessLogic.Services;
+using Core.Enums;
 using Core.Interfaces.Providers;
 using Core.Interfaces.Repositories;
 using DataAccess.Repositories.RepositoriesTb;
 using Infrastracture.Auth.Authentication;
+using Infrastracture.Auth.Authontication;
 using Infrastracture.Authentication;
 using Infrastracture.Caching;
 using Infrastracture.CodesGeneration;
@@ -18,6 +20,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Persistance;
+using Persistance.Options;
 using Persistance.Repositories.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -64,7 +67,7 @@ builder.Services.Configure<EmailOptions>(options =>
     options.Password = Environment.GetEnvironmentVariable("EMAIL_PASSWORD");
 });
 builder.Services.Configure<CacheOptions>(builder.Configuration.GetSection(nameof(CacheOptions)));
-builder.Services.Configure< AuthorizationOptions>(builder.Configuration.GetSection(nameof(AuthorizationOptions)));
+builder.Services.Configure<PersistanceAuthorizationOptions>(builder.Configuration.GetSection(nameof(PersistanceAuthorizationOptions)));
 
 
 
@@ -85,6 +88,19 @@ builder.Services.AddSingleton<ICodeGenerator, CodeGenerator>();
 
 builder.Services.AddApiAuthentication(builder.Configuration);
 builder.Services.AddApiRedis(builder.Configuration);
+
+builder.Services.AddAuthorization(options =>
+{
+    foreach (var permission in Enum.GetValues<Permission>())
+    {
+        var policyName = $"Permissions:{permission}";
+        options.AddPolicy(policyName, policy =>
+        {
+            policy.Requirements.Add(new PermissionRequirement(new[] { permission }));
+        });
+    }
+});
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

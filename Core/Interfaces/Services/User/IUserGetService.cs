@@ -1,4 +1,5 @@
 ﻿using Core.DTO.UserDTO.Responce;
+using Core.Enums;
 
 namespace Aplication.Services
 {
@@ -7,5 +8,6 @@ namespace Aplication.Services
         Task<UserResponcePassword?> GetUser(Guid id);
         Task<List<UserResponcePassword>> GetUsers();
         Task<UserResponcePassword?> GetUserByEmailOrLogin(string login);
+        Task<HashSet<Permission>> GetPermissions(Guid userId);
     }
 }

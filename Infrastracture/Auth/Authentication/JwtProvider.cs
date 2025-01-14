@@ -1,4 +1,5 @@
-﻿using Core.DTO.UserDTO.Responce;
+﻿using Core.ConfigurationProp;
+using Core.DTO.UserDTO.Responce;
 using Core.Entities;
 using Core.Interfaces.Providers;
 using Microsoft.Extensions.Options;
@@ -26,7 +27,7 @@ namespace Infrastracture.Authentication
 
         public string GenerateAuthenticateToken(UserResponcePassword user)
         {
-            Claim[] claims = [new("userId", user.Id.ToString())];
+            Claim[] claims = [new(CustomClaims.UserId, user.Id.ToString())];
             var signingCredentials = new SigningCredentials(
                  new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
                  SecurityAlgorithms.HmacSha256);

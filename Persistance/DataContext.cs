@@ -9,10 +9,11 @@ namespace Persistance
 {
     public class DataContext(
         DbContextOptions<DataContext> options,
-        IOptions<AuthorizationOptions> authOptions) : DbContext(options)
+        IOptions<PersistanceAuthorizationOptions> authOptions) : DbContext(options)
     {
         public DbSet<UserEntity> Users { get; set; }
         public DbSet<TaskEntity> Tasks { get; set; }
+        public DbSet<RoleEntity> Roles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

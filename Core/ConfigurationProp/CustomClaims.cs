@@ -4,12 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.Enums
+namespace Core.ConfigurationProp
 {
-    public enum Permission
+    public static class CustomClaims
     {
-        Read = 1,
-        Write = 2,
-        GetUsers = 3,
+        public static string UserId = "userId";
     }
 }

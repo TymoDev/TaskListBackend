@@ -2,6 +2,7 @@
 using Core.DTO.UserDTO.Request;
 using Core.DTO.UserDTO.Responce;
 using Core.Entities;
+using Core.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +20,8 @@ namespace Core.Interfaces.Repositories
         Task<string?> UpdateUserPassword(string email, string password);
         public  Task<Guid?> CreateUser(UserRequestHash user);
         public  Task<Guid?> DeleteUser(Guid id);
-        
+        Task<HashSet<Permission>> GetUserPermissions(Guid userId);
+
+
     }
 }

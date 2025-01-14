@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Persistance.Options
 {
-    public class AuthorizationOptions
+    public class PersistanceAuthorizationOptions
     {
         public RolePermissions[] RolePermissions { get; set; } = [];
     }

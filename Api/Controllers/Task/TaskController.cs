@@ -1,5 +1,7 @@
-﻿using BusinessLogic.Services;
+﻿using Api.Attributes;
+using BusinessLogic.Services;
 using Core.DTO.TaskDTO;
+using Core.Enums;
 using Core.ResultModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,6 +10,7 @@ namespace Api.Controllers.Task
 {
     [ApiController]
     [Route("api/[controller]")]
+    
     public class TasksController : ControllerBase
     {
         private readonly ITaskService service;
@@ -18,6 +21,7 @@ namespace Api.Controllers.Task
         }
         [HttpGet]
         [Authorize]
+        [RequirePermissions(Permission.Read)]
         public async Task<ActionResult<List<TaskResponse>>> GetTasks()
         {
             var tasks = await service.GetTasks();
@@ -27,6 +31,7 @@ namespace Api.Controllers.Task
 
         [HttpGet("{id:guid}")]
         [Authorize]
+        [RequirePermissions(Permission.Read)]
         public async Task<ActionResult<TaskResponse>> GetTask(Guid id)
         {
             var userId = User.FindFirst("userId")?.Value;
@@ -41,6 +46,7 @@ namespace Api.Controllers.Task
         }
         [Authorize]
         [HttpGet("user")]
+        [RequirePermissions(Permission.Read)]
         public async Task<ActionResult<List<TaskResponse>>> GetUserTasks()
         {
             var userId = User.FindFirst("userId")?.Value;
@@ -53,9 +59,9 @@ namespace Api.Controllers.Task
             var responce = tasks.Select(r => new TaskResponse(r.id, r.TaskName, r.taskStatus));
             return Ok(responce);
         }
-             [Authorize]
         [HttpPost]
         [Authorize]
+        [RequirePermissions(Permission.Write)]
         public async Task<ActionResult<Guid>> CreateTask([FromBody] TaskRequest request)
         {
             var userId = User.FindFirst("userId")?.Value;
@@ -70,6 +76,7 @@ namespace Api.Controllers.Task
 
         [HttpPut("{id:guid}")]
         [Authorize]
+        [RequirePermissions(Permission.Write)]
         public async Task<ActionResult<TaskResponse>> UpdateTask(Guid id, [FromBody] TaskRequest request)
         {
             var userId = User.FindFirst("userId")?.Value;
@@ -88,6 +95,7 @@ namespace Api.Controllers.Task
 
         [HttpDelete("{id:guid}")]
         [Authorize]
+        [RequirePermissions(Permission.Write)]
         public async Task<ActionResult<Guid>> DeleteTask(Guid id)
         {
             var userId = User.FindFirst("userId")?.Value;

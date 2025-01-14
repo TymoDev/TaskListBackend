@@ -2,6 +2,7 @@
 using Core.DTO.UserDTO.Request;
 using Core.DTO.UserDTO.Responce;
 using Core.Entities;
+using Core.Enums;
 using Core.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Persistance.Repositories.AbstractRepositories;
@@ -66,12 +67,17 @@ namespace Persistance.Repositories.Repositories
         }
         public async Task<Guid?> CreateUser(UserRequestHash userData)
         {
+            var roleEntity = await context.Roles
+            .SingleOrDefaultAsync(r => r.Id == (int)Role.User)
+            ?? throw new InvalidOperationException();
+
             var userEntity = new UserEntity
             {
                 Id = userData.Id,
                 UserName = userData.UserName,
                 Email = userData.Email,
                 PasswordHash = userData.PasswordHash,
+                Roles = [roleEntity]
             };
             return await Create(userEntity);
         }
@@ -85,7 +91,21 @@ namespace Persistance.Repositories.Repositories
             }
             return await Delete(id);
         }
+        public async Task<HashSet<Permission>> GetUserPermissions(Guid userId)
+        {
+            var roles = await context.Users
+                .AsNoTracking()
+                .Include(u => u.Roles)
+                .ThenInclude(r => r.Permissions)
+                .Where(u => u.Id == userId)
+                .Select(u => u.Roles)
+                .ToListAsync();
 
-        
+            return roles
+                .SelectMany(r => r)
+                .SelectMany(r => r.Permissions)
+                .Select(p => (Permission)p.Id)
+                .ToHashSet();
+        }
     }
 }

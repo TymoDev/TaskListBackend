@@ -1,7 +1,10 @@
-﻿using Infrastracture.Auth.Authentication;
+﻿using Core.Enums;
+using Infrastracture.Auth.Authentication;
+using Infrastracture.Auth.Authontication;
 using Infrastracture.EmailLogic;
 using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -34,10 +37,8 @@ namespace Api.Extensions
                             return Task.CompletedTask;
                         }
                     };
-
-
                 });
-
+            services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
             services.AddAuthorization();
         }
         public static void AddApiRedis(this IServiceCollection services, IConfiguration configuration)
@@ -50,6 +51,5 @@ namespace Api.Extensions
                 options.Configuration = connection;
             });
         }
-
     }
 }

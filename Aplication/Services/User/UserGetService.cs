@@ -1,4 +1,5 @@
 ﻿using Core.DTO.UserDTO.Responce;
+using Core.Enums;
 using Core.Interfaces.Repositories;
 using Core.ResultModels;
 using Core.ValidationModels.User;
@@ -41,6 +42,10 @@ namespace Aplication.Services
                 return null;
             }
             return responce;
+        }
+        public async Task<HashSet<Permission>> GetPermissions(Guid userId)
+        {
+            return await repository.GetUserPermissions(userId);
         }
     }
 }

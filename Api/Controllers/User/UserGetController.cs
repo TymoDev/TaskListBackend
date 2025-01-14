@@ -1,5 +1,7 @@
-﻿using Aplication.Services;
+﻿using Api.Attributes;
+using Aplication.Services;
 using Core.DTO.UserDTO.Responce;
+using Core.Enums;
 using Core.ResultModels;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,6 +18,7 @@ namespace Api.Controllers.User
             this.service = service;
         }
         [HttpGet]
+        [RequirePermissions(Permission.GetUsers)]
         public async Task<ActionResult<List<UserResponce>>> GetUsers()
         {
             var users = await service.GetUsers();
@@ -24,6 +27,7 @@ namespace Api.Controllers.User
         }
 
         [HttpGet("{id:guid}")]
+        [RequirePermissions(Permission.GetUsers)]
         public async Task<ActionResult<UserResponcePassword>> GetUserById(Guid id)
         {
             var userResponse = await service.GetUser(id);
@@ -36,6 +40,7 @@ namespace Api.Controllers.User
 
         }
         [HttpGet("{login}")]
+        [RequirePermissions(Permission.GetUsers)]
         public async Task<ActionResult<UserResponcePassword>> GetUserByEmailOrLogin(string login)
         {
             var userResponse = await service.GetUserByEmailOrLogin(login);
