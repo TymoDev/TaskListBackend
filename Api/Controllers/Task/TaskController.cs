@@ -21,7 +21,7 @@ namespace Api.Controllers.Task
         }
         [HttpGet]
         [Authorize]
-        [RequirePermissions(Permission.Read)]
+        [RequirePermissions(Permission.GetTasks)]
         public async Task<ActionResult<List<TaskResponse>>> GetTasks()
         {
             var tasks = await service.GetTasks();

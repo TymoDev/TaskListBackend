@@ -11,5 +11,6 @@ namespace Core.Enums
         Read = 1,
         Write = 2,
         GetUsers = 3,
+        GetTasks = 4
     }
 }

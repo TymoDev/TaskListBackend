@@ -11,7 +11,7 @@ namespace Persistance
 {
     public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<DataContext>
     {
-        public DataContext CreateDbContext(string[] args)//   
+        public DataContext CreateDbContext(string[] args)  
         {
             IConfigurationRoot configuration = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile(@Directory.GetCurrentDirectory() + "/../Api/appsettings.json").Build();
             IConfigurationRoot configurationDevelopment = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile(@Directory.GetCurrentDirectory() + "/../Api/appsettings.Development.json").Build();

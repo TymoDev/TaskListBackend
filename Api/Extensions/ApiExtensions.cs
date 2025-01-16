@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
 using System.Text;
 
 namespace Api.Extensions
@@ -50,6 +51,11 @@ namespace Api.Extensions
                 string connection = configuration.GetConnectionString("Redis");
                 options.Configuration = connection;
             });
+        }
+        public static void AddSerilog(this IServiceCollection services, IConfiguration configuration, IHostBuilder hostBuilder)
+        {
+            hostBuilder.UseSerilog((context, loggerConfiguration) =>
+                loggerConfiguration.ReadFrom.Configuration(configuration));
         }
     }
 }

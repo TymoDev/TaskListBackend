@@ -3,15 +3,18 @@ using Aplication.Services;
 using Aplication.Services.User;
 using BusinessLogic.Services;
 using Core.Enums;
+using Core.Interfaces.Logging;
 using Core.Interfaces.Providers;
 using Core.Interfaces.Repositories;
 using DataAccess.Repositories.RepositoriesTb;
+using Elastic.CommonSchema;
 using Infrastracture.Auth.Authentication;
 using Infrastracture.Auth.Authontication;
 using Infrastracture.Authentication;
 using Infrastracture.Caching;
 using Infrastracture.CodesGeneration;
 using Infrastracture.EmailLogic;
+using Infrastracture.Logging;
 using Infrastracture.Logic;
 using Infrastracture.Logic.CodesGeneration;
 using Microsoft.AspNetCore.Authorization;
@@ -22,6 +25,7 @@ using Microsoft.Extensions.Options;
 using Persistance;
 using Persistance.Options;
 using Persistance.Repositories.Repositories;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,6 +51,7 @@ builder.Services.AddCors(options =>
                    .AllowCredentials();
         });
 });
+
 
 DotNetEnv.Env.Load();
 builder.Configuration.AddEnvironmentVariables();
@@ -74,6 +79,7 @@ builder.Services.Configure<PersistanceAuthorizationOptions>(builder.Configuratio
 builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
 builder.Services.AddSingleton<IJwtProvider, JwtProvider>();
 builder.Services.AddSingleton<IEmailSender, EmailSender>();
+builder.Services.AddSingleton<IAppLogger, SerilogAppLogger>();
 builder.Services.AddScoped<ICacher, Cacher>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserGetService, UserGetService>();
@@ -88,6 +94,7 @@ builder.Services.AddSingleton<ICodeGenerator, CodeGenerator>();
 
 builder.Services.AddApiAuthentication(builder.Configuration);
 builder.Services.AddApiRedis(builder.Configuration);
+builder.Services.AddSerilog(builder.Configuration, builder.Host);
 
 builder.Services.AddAuthorization(options =>
 {

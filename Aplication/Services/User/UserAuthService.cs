@@ -1,4 +1,5 @@
 ﻿using Core.DTO.UserDTO;
+using Core.Interfaces.Logging;
 using Core.Interfaces.Providers;
 using Core.Interfaces.Repositories;
 using Core.ResultModels;
@@ -12,49 +13,68 @@ namespace Aplication.Services.User
         private readonly IUserRepository repository;
         private readonly IPasswordHasher hasher;
         private readonly IJwtProvider jwtProvider;
+        private readonly IAppLogger logger;
 
-        public UserAuthService(IUserRepository repository, IPasswordHasher hasher, IJwtProvider jwtProvider)
+        public UserAuthService(IUserRepository repository, IPasswordHasher hasher, IJwtProvider jwtProvider, IAppLogger logger)
         {
             this.repository = repository;
             this.hasher = hasher;
             this.jwtProvider = jwtProvider;
+            this.logger = logger;
         }
-        public async Task<LoginResultModel> Register(Guid id,RegisterUserRequest request)//add email validation
+
+        public async Task<LoginResultModel> Register(Guid id, RegisterUserRequest request)
         {
+            logger.Information($"Registering user with email: {request.Email}");
+
             var userModelResult = UsernameModel.Create(request.Username);
             if (!userModelResult.Success)
             {
+                logger.Error($"Username validation failed: {userModelResult.ErrorMessage}");
                 return LoginResultModel.Error(userModelResult.ErrorMessage);
             }
+
             var result = UserPasswordModel.Create(request.Password);
             if (!result.Success)
             {
+                logger.Error($"Password validation failed: {result.ErrorMessage}");
                 return LoginResultModel.Error(result.ErrorMessage);
             }
 
             var hashedPassword = hasher.Generate(request.Password);
+            logger.Information($"Creating user with ID: {id} and username: {request.Username}");
             await repository.CreateUser(new UserRequestHash(id, request.Username, request.Email, hashedPassword));
+
             var user = await repository.GetUserById(id);
             var token = jwtProvider.GenerateAuthenticateToken(user);
+            logger.Information($"User with ID: {id} registered successfully");
+
             return LoginResultModel.Ok(token);
         }
 
         public async Task<LoginResultModel> Login(LoginUserRequest request)
         {
-            
-            var user = await repository.GetUserByEmailOrUsername(request.Login); 
+            logger.Information($"Logging in user with login: {request.Login}");
+
+            var user = await repository.GetUserByEmailOrUsername(request.Login);
             if (user == null)
             {
-                return LoginResultModel.Error("BadRequest with data");
+                logger.Warning($"Login failed: User with login {request.Login} not found");
+                return LoginResultModel.Error("Invalid login credentials");
             }
+
             bool result = hasher.Verify(request.Password, user.Password.ToString());
-            if (result == false)
+            if (!result)
             {
+                logger.Warning("Login failed: Incorrect password");
                 return LoginResultModel.Error("Incorrect password");
             }
-            var token = jwtProvider.GenerateAuthenticateToken(user);
-            return LoginResultModel.Ok(token);
 
+            var token = jwtProvider.GenerateAuthenticateToken(user);
+            logger.Information($"User with ID: {user.Id} logged in successfully");
+
+            return LoginResultModel.Ok(token);
         }
     }
+
 }
