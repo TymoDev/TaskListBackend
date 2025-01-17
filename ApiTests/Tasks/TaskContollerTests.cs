@@ -136,7 +136,7 @@ public class TaskControllerTests : IDisposable
 
         var taskRequest = new TaskRequest("New Task", "Pending");
 
-        _taskServiceMock.Setup(s => s.CreateTask(It.IsAny<TaskRequest>(), userId)).ReturnsAsync(ResultModel.Ok);
+        _taskServiceMock.Setup(s => s.CreateTask(It.IsAny<TaskRequest>(), userId)).ReturnsAsync(ResultModelObject<TaskResponse>.Ok);
 
         var client = _factory.CreateClient();
 

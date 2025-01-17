@@ -160,7 +160,7 @@ namespace AplicationTests.TasksTests
 
             _mockTaskRepository
                 .Setup(repo => repo.CreateTask(It.IsAny<Guid>(), request.TaskName, request.TaskStatus, userId))
-                .ReturnsAsync(Guid.NewGuid());
+                .ReturnsAsync(new TaskResponse(Guid.NewGuid(),"task","taskStatus"));
 
             // Act
             var result = await _testService.CreateTask(request, userId);
@@ -202,7 +202,7 @@ namespace AplicationTests.TasksTests
 
             _mockTaskRepository
                 .Setup(repo => repo.CreateTask(It.IsAny<Guid>(), request.TaskName, request.TaskStatus, userId))
-                .ReturnsAsync((Guid?)null);
+                .ReturnsAsync(new TaskResponse(Guid.NewGuid(), "task", "taskStatus"));
 
             // Act
             var result = await _testService.CreateTask(request, userId);
@@ -231,7 +231,7 @@ namespace AplicationTests.TasksTests
             };
 
             _mockTaskRepository.Setup(repo => repo.GetByUserTask(userId)).ReturnsAsync(userTasks);
-            _mockTaskRepository.Setup(repo => repo.UpdateTask(taskId, request.TaskName, request.TaskStatus)).ReturnsAsync(taskId);
+            _mockTaskRepository.Setup(repo => repo.UpdateTask(taskId, request.TaskName, request.TaskStatus)).ReturnsAsync(new TaskResponse(Guid.NewGuid(), "task", "taskStatus"));
 
             // Act
             var result = await _testService.UpdateTask(taskId, userId, request);

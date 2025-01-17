@@ -40,6 +40,10 @@ builder.Services.AddDbContext<DataContext>
     (options =>
       options.UseSqlite(builder.Configuration.GetConnectionString("DbConnection"))  
     );
+var appSettingsFile = Environment.GetEnvironmentVariable("DOTNET_APPSETTINGS_FILE") ?? "appsettings.json";
+builder.Configuration
+    .AddJsonFile(appSettingsFile, optional: false, reloadOnChange: true);
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigins",
@@ -116,7 +120,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseCookiePolicy(new CookiePolicyOptions
 {
