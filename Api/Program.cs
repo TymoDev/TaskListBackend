@@ -7,7 +7,6 @@ using Core.Interfaces.Logging;
 using Core.Interfaces.Providers;
 using Core.Interfaces.Repositories;
 using DataAccess.Repositories.RepositoriesTb;
-using Elastic.CommonSchema;
 using Infrastracture.Auth.Authentication;
 using Infrastracture.Auth.Authontication;
 using Infrastracture.Authentication;
@@ -26,6 +25,10 @@ using Persistance;
 using Persistance.Options;
 using Persistance.Repositories.Repositories;
 using Serilog;
+using Serilog.Exceptions;
+using Serilog.Sinks.Elasticsearch;
+using System.Reflection;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -56,6 +59,38 @@ builder.Services.AddCors(options =>
         });
 });
 
+void ConfigureLogging()
+{
+    var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+    var conf = new ConfigurationBuilder()
+        .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+        //.AddJsonFile("appsettings.Docker.json", optional: false, reloadOnChange: true)
+        .AddJsonFile($"appsettings.{env}.json", optional: true)
+        .Build();
+
+    Serilog.Log.Logger = new LoggerConfiguration()
+        .Enrich.FromLogContext()
+        .Enrich.WithExceptionDetails()
+        .WriteTo.Debug()
+        .WriteTo.Console()
+        .WriteTo.Elasticsearch(ConfigureElasticSync(conf, env))
+        .Enrich.WithProperty("Environment", env)
+        .ReadFrom.Configuration(conf)
+        .CreateLogger();
+}
+
+ElasticsearchSinkOptions ConfigureElasticSync(IConfigurationRoot conf, string env)
+{
+    return new ElasticsearchSinkOptions(new Uri(conf["ElasticConfiguration:Uri"]))
+    {
+        AutoRegisterTemplate = true,
+        AutoRegisterTemplateVersion = AutoRegisterTemplateVersion.ESv8,
+        IndexFormat = $"{Assembly.GetExecutingAssembly().GetName().Name.ToLower().Replace('.', '-')}-{env?.ToLower()}-{DateTime.UtcNow:yyyy-MM}",
+        NumberOfShards = 2,
+        NumberOfReplicas = 1
+    };
+}
+
 
 DotNetEnv.Env.Load();
 builder.Configuration.AddEnvironmentVariables();
@@ -75,6 +110,7 @@ builder.Services.Configure<EmailOptions>(options =>
     options.FromEmail = Environment.GetEnvironmentVariable("EMAIL_FROM");
     options.Password = Environment.GetEnvironmentVariable("EMAIL_PASSWORD");
 });
+
 builder.Services.Configure<CacheOptions>(builder.Configuration.GetSection(nameof(CacheOptions)));
 builder.Services.Configure<PersistanceAuthorizationOptions>(builder.Configuration.GetSection(nameof(PersistanceAuthorizationOptions)));
 
@@ -98,7 +134,7 @@ builder.Services.AddSingleton<ICodeGenerator, CodeGenerator>();
 
 builder.Services.AddApiAuthentication(builder.Configuration);
 builder.Services.AddApiRedis(builder.Configuration);
-builder.Services.AddSerilog(builder.Configuration, builder.Host);
+//builder.Services.AddSerilog(builder.Configuration, builder.Host);
 
 builder.Services.AddAuthorization(options =>
 {
@@ -111,6 +147,8 @@ builder.Services.AddAuthorization(options =>
         });
     }
 });
+ConfigureLogging();
+builder.Host.UseSerilog();
 
 var app = builder.Build();
 
