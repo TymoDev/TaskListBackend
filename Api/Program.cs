@@ -63,8 +63,8 @@ void ConfigureLogging()
 {
     var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
     var conf = new ConfigurationBuilder()
-        .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-        //.AddJsonFile("appsettings.Docker.json", optional: false, reloadOnChange: true)
+        //.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+        .AddJsonFile("appsettings.Docker.json", optional: false, reloadOnChange: true)
         .AddJsonFile($"appsettings.{env}.json", optional: true)
         .Build();
 
@@ -81,7 +81,7 @@ void ConfigureLogging()
 
 ElasticsearchSinkOptions ConfigureElasticSync(IConfigurationRoot conf, string env)
 {
-    return new ElasticsearchSinkOptions(new Uri(conf["ElasticConfiguration:Uri"]))
+    return new ElasticsearchSinkOptions(new Uri(conf["ElasticConfigurationDocker:Uri"]))
     {
         AutoRegisterTemplate = true,
         AutoRegisterTemplateVersion = AutoRegisterTemplateVersion.ESv8,

@@ -52,10 +52,10 @@ namespace Api.Extensions
                 options.Configuration = connection;
             });
         }
-        public static void AddSerilog(this IServiceCollection services, IConfiguration configuration, IHostBuilder hostBuilder)
+        /*public static void AddSerilog(this IServiceCollection services, IConfiguration configuration, IHostBuilder hostBuilder)
         {
             hostBuilder.UseSerilog((context, loggerConfiguration) =>
                 loggerConfiguration.ReadFrom.Configuration(configuration));
-        }
+        }*/
     }
 }

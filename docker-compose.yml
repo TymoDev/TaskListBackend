@@ -19,6 +19,8 @@ services:
       - redis
       - elasticsearch
       - kibana
+    networks:
+    - elastic
 
   redis:
     image: redis:alpine
