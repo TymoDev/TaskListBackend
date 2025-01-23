@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Persistance.Repositories.Repositories
 {
-   /* public class UserProfileRepository : CrudAbstractions<UserProfileEntity>, IUserProfileRepository
+    public class UserProfileRepository : CrudAbstractions<UserProfileEntity>, IUserProfileRepository
     {
         private readonly DataContext context;
 
@@ -22,5 +22,5 @@ namespace Persistance.Repositories.Repositories
         {
             return await GetById(userId, userProfile => new UserProfileDto(userId, userProfile.Description, userProfile.TwitterUrl, userProfile.LinkedInUrl, userProfile.GitHubUrl, userProfile.PersonalWebsiteUrl));
         }
-    }*/
+    }
 }

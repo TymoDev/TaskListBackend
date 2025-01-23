@@ -21,12 +21,13 @@ namespace Api.Controllers.User
             this.cookieHandler = cookieHandler;
         }
         [HttpPost("register")]
-        public async Task<IActionResult> Register(RegisterUserDto request)
+        public async Task<IActionResult> Register(RegisterUserWithProfileDto request)
         {
-            Guid id = Guid.NewGuid();
+            Guid userId = Guid.NewGuid();
+            Guid profileId = Guid.NewGuid();
             try
             {
-                var result = await auth.Register(id, request);
+                var result = await auth.Register(userId, profileId, request);
 
                 if (!result.Success)
                 {
@@ -36,7 +37,7 @@ namespace Api.Controllers.User
                 var token = result.Token;
 
                 cookieHandler.SetCookie(CookieProps.CookieName, token, 7);
-                return Ok(id);
+                return Ok(new UserAndProfileIdDto(userId,profileId));
             }
             catch (Microsoft.EntityFrameworkCore.DbUpdateException ex) 
             {

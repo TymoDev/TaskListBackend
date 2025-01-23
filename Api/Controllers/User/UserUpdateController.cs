@@ -1,6 +1,5 @@
 ﻿using Aplication.Services.User;
 using Core.DTO.UserDTO;
-using Core.DTO.UserDTO.Request;
 using Core.ResultModels;
 using Microsoft.AspNetCore.Mvc;
 

@@ -1,4 +1,4 @@
-﻿/*using Core.DTO.UserDTO;
+﻿using Core.DTO.UserDTO;
 
 namespace Aplication.Services.User
 {
@@ -6,4 +6,4 @@ namespace Aplication.Services.User
     {
         Task<UserProfileDto?> GetUserProfile(Guid id);
     }
-}*/
+}

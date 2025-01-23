@@ -1,4 +1,4 @@
-﻿/*using Core.DTO.UserDTO;
+﻿using Core.DTO.UserDTO;
 using Core.Interfaces.Logging;
 using Core.Interfaces.Repositories;
 using Persistance.Repositories.Repositories;
@@ -35,4 +35,3 @@ namespace Aplication.Services.User
         }
     }
 }
-*/

@@ -1,5 +1,4 @@
 ﻿using Core.DTO.UserDTO;
-using Core.DTO.UserDTO.Request;
 using Core.Interfaces.Logging;
 using Core.Interfaces.Repositories;
 using Core.ResultModels;

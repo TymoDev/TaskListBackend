@@ -52,7 +52,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowSpecificOrigins",
         builder =>
         {
-            builder.WithOrigins("http://localhost:5173", "https://localhost:5173")
+            builder.WithOrigins("http://localhost:5174", "https://localhost:5174")
                    .AllowAnyHeader()
                    .AllowAnyMethod()
                    .AllowCredentials();
@@ -126,6 +126,8 @@ builder.Services.AddScoped<IUserGetService, UserGetService>();
 builder.Services.AddScoped<IUserUpdateService,UserUpdateService>();
 builder.Services.AddScoped<IUserAuthService, UserAuthService>();
 builder.Services.AddScoped<IUserResetPasswordService,UserResetPasswordService>();
+builder.Services.AddScoped<IUserProfileRepository, UserProfileRepository>();
+builder.Services.AddScoped<IUserProfileService, UserProfileService>();
 
 
 builder.Services.AddScoped<ITaskRepository, TaskRepository>();

@@ -1,7 +1,7 @@
 ﻿using Api.Attributes;
 using Aplication.Services;
 using Core.ConfigurationProp;
-using Core.DTO.UserDTO.Responce;
+using Core.DTO.UserDTO;
 using Core.Enums;
 using Core.ResultModels;
 using Microsoft.AspNetCore.Mvc;
@@ -20,14 +20,14 @@ namespace Api.Controllers.User
         }
         [HttpGet]
         [RequirePermissions(Permission.GetUsers)]
-        public async Task<ActionResult<List<UserResponse>>> GetUsers()
+        public async Task<ActionResult<List<UserDto>>> GetUsers()
         {
             var users = await service.GetUsers();
-            var responce = users.Select(b => new UserResponse(b.Id, b.Username, b.Email));
+            var responce = users.Select(b => new UserDto(b.Id, b.Username, b.Email));
             return Ok(responce);
         }
         [HttpGet("user")]
-        public async Task<ActionResult<UserResponse>> GetUser()
+        public async Task<ActionResult<UserDto>> GetUser()
         {
             var userId = User.FindFirst(CustomClaims.UserId)?.Value;
             var userIdGuid = Guid.Parse(userId);
@@ -36,34 +36,34 @@ namespace Api.Controllers.User
             {
                 return Unauthorized();
             }
-            var response = new UserResponse(result.Id, result.Username, result.Email);
+            var response = new UserDto(result.Id, result.Username, result.Email);
             return Ok(response);
         }
 
 
         [HttpGet("{id:guid}")]
         [RequirePermissions(Permission.GetUsers)]
-        public async Task<ActionResult<UserResponcePassword>> GetUserById(Guid id)
+        public async Task<ActionResult<UserPasswordDto>> GetUserById(Guid id)
         {
             var response = await service.GetUser(id);
             if (response == null)
             {
                 return NotFound();
             }
-            var responce = new UserResponse(response.Id, response.Username, response.Email);
+            var responce = new UserDto(response.Id, response.Username, response.Email);
             return Ok(responce);
 
         }
         [HttpGet("{login}")]
         [RequirePermissions(Permission.GetUsers)]
-        public async Task<ActionResult<UserResponcePassword>> GetUserByEmailOrLogin(string login)
+        public async Task<ActionResult<UserPasswordDto>> GetUserByEmailOrLogin(string login)
         {
             var response = await service.GetUserByEmailOrLogin(login);
             if (response == null)
             {
                 return NotFound();
             }
-            var responce = new UserResponse(response.Id, response.Username, response.Email);
+            var responce = new UserDto(response.Id, response.Username, response.Email);
             return Ok(responce);
         }
     }

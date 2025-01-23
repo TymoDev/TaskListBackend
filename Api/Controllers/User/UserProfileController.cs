@@ -1,4 +1,4 @@
-﻿/*using Api.Attributes;
+﻿using Api.Attributes;
 using Aplication.Services;
 using Aplication.Services.User;
 using Core.ConfigurationProp;
@@ -26,8 +26,8 @@ public class UserProfileController : Controller
         {
             return NotFound();
         }
-        var response = new UserProfileDto(serviceResponse.Id, serviceResponse.Description, serviceResponse.TwitterUrl, serviceResponse.LinkedInUrl, serviceResponse.GitHubUrl, serviceResponse.PersonalWebsiteUrl, serviceResponse.AdditionalLinks);
+        var response = new UserProfileDto(serviceResponse.Id, serviceResponse.Description, serviceResponse.TwitterUrl, serviceResponse.LinkedInUrl, serviceResponse.GitHubUrl, serviceResponse.PersonalWebsiteUrl);
         return Ok(response);
 
     }
-}*/
+}

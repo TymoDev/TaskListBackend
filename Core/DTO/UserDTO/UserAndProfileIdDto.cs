@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.DTO.UserDTO.Responce
+namespace Core.DTO.UserDTO
 {
-    public record UserResponse(Guid Id, string Username, string Email);
+    public record UserAndProfileIdDto(Guid UserId, Guid ProfileId);
 }

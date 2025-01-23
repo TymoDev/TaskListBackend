@@ -23,11 +23,11 @@ namespace Aplication.Services.User
             this.logger = logger;
         }
 
-        public async Task<LoginResultModel> Register(Guid id, RegisterUserDto request)
+        public async Task<LoginResultModel> Register(Guid userId,Guid profileId, RegisterUserWithProfileDto request)
         {
             logger.Information($"Registering user with email: {request.Email}");
 
-            var userModelResult = UsernameModel.Create(request.Username);
+            var userModelResult = UsernameModel.Create(request.Login);
             if (!userModelResult.Success)
             {
                 logger.Error($"Username validation failed: {userModelResult.ErrorMessage}");
@@ -42,12 +42,12 @@ namespace Aplication.Services.User
             }
 
             var hashedPassword = hasher.Generate(request.Password);
-            logger.Information($"Creating user with ID: {id} and username: {request.Username}");
-            await repository.CreateUser(new UserHashDto(id, request.Username, request.Email, hashedPassword));
+            logger.Information($"Creating user with ID: {userId} and username: {request.Login}");
+            await repository.CreateUser(userId, profileId, new RegisterUserWithProfileDto(request.Login,request.Email,hashedPassword,request.Description,request.TwitterUrl,request.LinkedInUrl,request.GitHubUrl,request.PersonalWebsiteUrl));
 
-            var user = await repository.GetUserById(id);
+            var user = await repository.GetUserById(userId);
             var token = jwtProvider.GenerateAuthenticateToken(user);
-            logger.Information($"User with ID: {id} registered successfully");
+            logger.Information($"User with ID: {userId} registered successfully");
 
             return LoginResultModel.Ok(token);
         }

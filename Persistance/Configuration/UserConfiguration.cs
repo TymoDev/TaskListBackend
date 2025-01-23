@@ -10,12 +10,12 @@ namespace DataAccess.Configurations
         {
             builder.HasKey(x => x.Id);
 
-            builder.Property(x => x.UserName)
+            builder.Property(x => x.Login)
                 .IsRequired();
 
             builder.Property(x => x.PasswordHash)
                .IsRequired();
-            builder.HasIndex(x => x.UserName)
+            builder.HasIndex(x => x.Login)
              .IsUnique();
             builder.HasIndex(x => x.Email)
              .IsUnique();

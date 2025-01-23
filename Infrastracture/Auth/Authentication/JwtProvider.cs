@@ -1,6 +1,5 @@
 ﻿using Core.ConfigurationProp;
 using Core.DTO.UserDTO;
-using Core.DTO.UserDTO.Responce;
 using Core.Entities;
 using Core.Interfaces.Providers;
 using Microsoft.Extensions.Options;

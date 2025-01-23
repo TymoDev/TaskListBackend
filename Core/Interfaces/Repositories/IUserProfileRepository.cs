@@ -1,4 +1,4 @@
-﻿/*using Core.DTO.UserDTO;
+﻿using Core.DTO.UserDTO;
 
 namespace Persistance.Repositories.Repositories
 {
@@ -6,4 +6,4 @@ namespace Persistance.Repositories.Repositories
     {
         Task<UserProfileDto?> GetUserProfile(Guid userId);
     }
-}*/
+}
