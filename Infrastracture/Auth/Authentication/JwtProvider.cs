@@ -1,4 +1,5 @@
 ﻿using Core.ConfigurationProp;
+using Core.DTO.UserDTO;
 using Core.DTO.UserDTO.Responce;
 using Core.Entities;
 using Core.Interfaces.Providers;
@@ -25,7 +26,7 @@ namespace Infrastracture.Authentication
         {
         }
 
-        public string GenerateAuthenticateToken(UserResponcePassword user)
+        public string GenerateAuthenticateToken(UserPasswordDto user)
         {
             Claim[] claims = [new(CustomClaims.UserId, user.Id.ToString())];
             var signingCredentials = new SigningCredentials(

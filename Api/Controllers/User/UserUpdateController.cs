@@ -17,12 +17,12 @@ namespace Api.Controllers.User
             this.service = service;
         }
         [HttpPut("{id:guid}")]
-        public async Task<ActionResult<Guid>> UpdateUser(Guid id, [FromBody] RegisterUserRequest request)
+        public async Task<ActionResult<Guid>> UpdateUser(Guid id, [FromBody] RegisterUserDto request)
         {
             ResultModel result;
             try
             {
-                result = await service.UpdateUser(new UserRequestId(id, request.Username, request.Email, request.Password));
+                result = await service.UpdateUser(new UserIdDto(id, request.Username, request.Email, request.Password));
             } 
             catch (Microsoft.EntityFrameworkCore.DbUpdateException ex) 
             {
@@ -53,7 +53,7 @@ namespace Api.Controllers.User
             return Ok(id);
         }
         [HttpPut]
-        public async Task<ActionResult<string>> UpdateUserPassword(ResetPasswordRequest request)
+        public async Task<ActionResult<string>> UpdateUserPassword(ResetPasswordDto request)
         {
             ResultModel result;
             result = await service.UpdateUserPassword(request);

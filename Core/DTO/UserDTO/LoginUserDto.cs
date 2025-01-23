@@ -4,9 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.Entities
+namespace Core.DTO.UserDTO
 {
-    internal class UserProfileEntity
-    {
-    }
+    public record LoginUserDto(string Login,string Password);
 }

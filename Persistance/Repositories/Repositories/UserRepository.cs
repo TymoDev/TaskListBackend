@@ -1,6 +1,4 @@
 ﻿using Core.DTO.UserDTO;
-using Core.DTO.UserDTO.Request;
-using Core.DTO.UserDTO.Responce;
 using Core.Entities;
 using Core.Enums;
 using Core.Interfaces.Repositories;
@@ -22,25 +20,25 @@ namespace Persistance.Repositories.Repositories
         {
             this.context = context;
         }
-        public async Task<List<UserResponcePassword>> GetUsers()
+        public async Task<List<UserPasswordDto>> GetUsers()
         {
-            return await Get(u => new UserResponcePassword(u.Id,u.UserName,u.Email,u.PasswordHash));
+            return await Get(u => new UserPasswordDto(u.Id,u.UserName,u.Email,u.PasswordHash));
         }
-        public async Task<UserResponcePassword?> GetUserById(Guid id)
+        public async Task<UserPasswordDto?> GetUserById(Guid id)
         {
-            return await GetById(id,u => new UserResponcePassword(u.Id, u.UserName, u.Email,u.PasswordHash));
+            return await GetById(id,u => new UserPasswordDto(u.Id, u.UserName, u.Email,u.PasswordHash));
         }
-        public async Task<UserResponcePassword?> GetUserByEmailOrUsername(string login)
+        public async Task<UserPasswordDto?> GetUserByEmailOrUsername(string login)
         {
             var user = await context.Users.SingleOrDefaultAsync(u => u.Email == login || u.UserName == login);
             if (user == null)
             {
                 return null;
             }
-            return new UserResponcePassword(user.Id, user.UserName, user.Email, user.PasswordHash);
+            return new UserPasswordDto(user.Id, user.UserName, user.Email, user.PasswordHash);
         }
 
-        public async Task<Guid?> UpdateUser(UserRequestHash userData)
+        public async Task<Guid?> UpdateUser(UserHashDto userData)
         {
             var user = GetById(userData.Id, u => u);
             if(user == null)
@@ -65,7 +63,7 @@ namespace Persistance.Repositories.Repositories
             await context.SaveChangesAsync();
             return user.Email;        
         }
-        public async Task<Guid?> CreateUser(UserRequestHash userData)
+        public async Task<Guid?> CreateUser(UserHashDto userData)
         {
             var roleEntity = await context.Roles
             .SingleOrDefaultAsync(r => r.Id == (int)Role.User)

@@ -23,7 +23,7 @@ namespace Aplication.Services.User
             this.logger = logger;
         }
 
-        public async Task<LoginResultModel> Register(Guid id, RegisterUserRequest request)
+        public async Task<LoginResultModel> Register(Guid id, RegisterUserDto request)
         {
             logger.Information($"Registering user with email: {request.Email}");
 
@@ -43,7 +43,7 @@ namespace Aplication.Services.User
 
             var hashedPassword = hasher.Generate(request.Password);
             logger.Information($"Creating user with ID: {id} and username: {request.Username}");
-            await repository.CreateUser(new UserRequestHash(id, request.Username, request.Email, hashedPassword));
+            await repository.CreateUser(new UserHashDto(id, request.Username, request.Email, hashedPassword));
 
             var user = await repository.GetUserById(id);
             var token = jwtProvider.GenerateAuthenticateToken(user);
@@ -52,7 +52,7 @@ namespace Aplication.Services.User
             return LoginResultModel.Ok(token);
         }
 
-        public async Task<LoginResultModel> Login(LoginUserRequest request)
+        public async Task<LoginResultModel> Login(LoginUserDto request)
         {
             logger.Information($"Logging in user with login: {request.Login}");
 

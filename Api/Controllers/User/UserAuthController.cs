@@ -1,7 +1,6 @@
 ﻿using Aplication.Services.User;
 using Core.ConfigurationProp;
 using Core.DTO.UserDTO;
-using Core.DTO.UserDTO.Request;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -22,7 +21,7 @@ namespace Api.Controllers.User
             this.cookieHandler = cookieHandler;
         }
         [HttpPost("register")]
-        public async Task<IActionResult> Register(RegisterUserRequest request)
+        public async Task<IActionResult> Register(RegisterUserDto request)
         {
             Guid id = Guid.NewGuid();
             try
@@ -61,9 +60,9 @@ namespace Api.Controllers.User
 
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginUserRequest request)
+        public async Task<IActionResult> Login(LoginUserDto request)
         {
-            var tokenResultModel = await auth.Login(new LoginUserRequest(request.Login,request.Password));
+            var tokenResultModel = await auth.Login(new LoginUserDto(request.Login,request.Password));
             if (!tokenResultModel.Success)
             {
                 return BadRequest(tokenResultModel.ErrorMessage);

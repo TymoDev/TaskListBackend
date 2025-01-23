@@ -1,5 +1,4 @@
 ﻿using Core.DTO.UserDTO;
-using Core.DTO.UserDTO.Request;
 using Core.ResultModels;
 
 namespace Aplication.Services.User
@@ -7,7 +6,7 @@ namespace Aplication.Services.User
     public interface IUserUpdateService
     {
         Task<ResultModel?> DeleteUser(Guid id);
-        Task<ResultModel?> UpdateUser(UserRequestId request);
-        Task<ResultModel?> UpdateUserPassword(ResetPasswordRequest request);
+        Task<ResultModel?> UpdateUser(UserIdDto request);
+        Task<ResultModel?> UpdateUserPassword(ResetPasswordDto request);
     }
 }

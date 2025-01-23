@@ -1,6 +1,5 @@
 ﻿using Aplication.Services.User;
 using Core.DTO.UserDTO;
-using Core.DTO.UserDTO.Request;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,13 +16,13 @@ namespace Api.Controllers.User
             this.service = service;
         }
         [HttpPost("reset/password")]
-        public async Task<IActionResult> ResetPasswordCodeCreate( ResetPasswordRequestEmail request)
+        public async Task<IActionResult> ResetPasswordCodeCreate( ResetPasswordDto request)
         {
             var result = await service.ResetPasswordNotify(request.Email);
             return Ok();
         }
         [HttpPost("reset/password/code")]
-        public async Task<IActionResult> ResetPasswordCodeVerify(ResetPasswordVerifyRequest request)
+        public async Task<IActionResult> ResetPasswordCodeVerify(ResetPasswordVerifyDto request)
         {
             var result = await service.ResetPasswordVerify(request.Email,request.Code);
             if (!result.Success)

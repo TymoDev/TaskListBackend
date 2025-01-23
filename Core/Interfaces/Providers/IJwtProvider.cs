@@ -1,10 +1,10 @@
-﻿using Core.DTO.UserDTO.Responce;
+﻿using Core.DTO.UserDTO;
 using Core.Entities;
 
 namespace Core.Interfaces.Providers
 {
     public interface IJwtProvider
     {
-        string GenerateAuthenticateToken(UserResponcePassword user);
+        string GenerateAuthenticateToken(UserPasswordDto user);
     }
 }

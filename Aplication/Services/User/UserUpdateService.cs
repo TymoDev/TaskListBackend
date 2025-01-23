@@ -27,7 +27,7 @@ namespace Aplication.Services.User
             this.logger = logger;
         }
 
-        public async Task<ResultModel?> UpdateUser(UserRequestId request)
+        public async Task<ResultModel?> UpdateUser(UserIdDto request)
         {
             logger.Information($"Updating user with ID: {request.id}");
 
@@ -48,7 +48,7 @@ namespace Aplication.Services.User
             var passwordHash = hasher.Generate(request.Password);
             logger.Information($"Generated password hash for user ID: {request.id}");
 
-            var result = await repository.UpdateUser(new UserRequestHash(request.id, request.Username, request.Email, passwordHash));
+            var result = await repository.UpdateUser(new UserHashDto(request.id, request.Username, request.Email, passwordHash));
             if (result == null)
             {
                 logger.Error($"Failed to update user with ID: {request.id}");
@@ -59,7 +59,7 @@ namespace Aplication.Services.User
             return ResultModel.Ok();
         }
 
-        public async Task<ResultModel?> UpdateUserPassword(ResetPasswordRequest request)
+        public async Task<ResultModel?> UpdateUserPassword(ResetPasswordDto request)
         {
             logger.Information($"Updating password for user with email: {request.Email}");
 

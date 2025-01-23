@@ -1,15 +1,7 @@
-﻿using Core.DTO.UserDTO.Responce;
+﻿using Core.DTO.UserDTO;
 using Core.Enums;
 using Core.Interfaces.Logging;
 using Core.Interfaces.Repositories;
-using Core.ResultModels;
-using Core.ValidationModels.User;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Aplication.Services
 {
@@ -24,7 +16,7 @@ namespace Aplication.Services
             this.logger = logger;
         }
 
-        public async Task<List<UserResponcePassword>> GetUsers()
+        public async Task<List<UserPasswordDto>> GetUsers()
         {
             logger.Information("Fetching all users");
             var users = await repository.GetUsers();
@@ -32,7 +24,7 @@ namespace Aplication.Services
             return users;
         }
 
-        public async Task<UserResponcePassword?> GetUser(Guid id)
+        public async Task<UserPasswordDto?> GetUser(Guid id)
         {
             logger.Information($"Fetching user with ID: {id}");
             var responce = await repository.GetUserById(id);
@@ -45,7 +37,7 @@ namespace Aplication.Services
             return responce;
         }
 
-        public async Task<UserResponcePassword?> GetUserByEmailOrLogin(string login)
+        public async Task<UserPasswordDto?> GetUserByEmailOrLogin(string login)
         {
             logger.Information($"Fetching user with login or email: {login}");
             var responce = await repository.GetUserByEmailOrUsername(login);
