@@ -8,5 +8,6 @@ namespace Aplication.Services.User
     {
         Task<LoginResultModel> Login(LoginUserRequest request);
         Task<LoginResultModel> Register(Guid id,RegisterUserRequest request);
+        Task<ResultModel> Logout();
     }
 }

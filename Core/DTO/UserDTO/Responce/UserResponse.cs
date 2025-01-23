@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace Core.DTO.UserDTO.Responce
 {
-    public record UserResponce(Guid Id, string Username, string Email);
+    public record UserResponse(Guid Id, string Username, string Email);
 }

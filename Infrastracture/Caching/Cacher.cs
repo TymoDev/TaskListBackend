@@ -15,6 +15,7 @@ namespace Infrastracture.Caching
             this.cache = cache;
             this.options = options;
             defaultExpare = TimeSpan.FromMinutes(options.Value.ExpiresMinutes);
+            Console.WriteLine(options.Value); 
             defaultOptions = new DistributedCacheEntryOptions
             {
                 AbsoluteExpirationRelativeToNow = defaultExpare

@@ -75,6 +75,12 @@ namespace Aplication.Services.User
 
             return LoginResultModel.Ok(token);
         }
+        public async Task<ResultModel> Logout()
+        {
+            logger.Information("Logging out user");
+            //Additional logout logic
+            logger.Information("User successfully logged out");
+            return ResultModel.Ok();
+        }
     }
-
 }

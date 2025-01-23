@@ -1,4 +1,5 @@
 ﻿using Aplication.Services.User;
+using Core.ConfigurationProp;
 using Core.DTO.UserDTO;
 using Core.DTO.UserDTO.Request;
 using Microsoft.AspNetCore.Authorization;
@@ -13,18 +14,17 @@ namespace Api.Controllers.User
     public class UserAuthController : ControllerBase
     {
         private readonly IUserAuthService auth;
-        private readonly IHttpContextAccessor httpContextAccessor;
+        private readonly ICookieHandler cookieHandler;
 
-        public UserAuthController(IUserAuthService authService, IHttpContextAccessor httpContextAccessor)
+        public UserAuthController(IUserAuthService authService, ICookieHandler cookieHandler)
         {
             this.auth = authService;
-            this.httpContextAccessor = httpContextAccessor;
+            this.cookieHandler = cookieHandler;
         }
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterUserRequest request)
         {
             Guid id = Guid.NewGuid();
-            var httpContext = httpContextAccessor.HttpContext;
             try
             {
                 var result = await auth.Register(id, request);
@@ -36,8 +36,7 @@ namespace Api.Controllers.User
 
                 var token = result.Token;
 
-                // Збереження токена в cookies
-                httpContext.Response.Cookies.Append("tasty-cookies", token);
+                cookieHandler.SetCookie(CookieProps.CookieName, token, 7);
                 return Ok(id);
             }
             catch (Microsoft.EntityFrameworkCore.DbUpdateException ex) 
@@ -64,21 +63,24 @@ namespace Api.Controllers.User
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginUserRequest request)
         {
-            //Create token,Check e-mail and password
-            var httpContext = httpContextAccessor.HttpContext;
             var tokenResultModel = await auth.Login(new LoginUserRequest(request.Login,request.Password));
             if (!tokenResultModel.Success)
             {
                 return BadRequest(tokenResultModel.ErrorMessage);
             }
             var token = tokenResultModel.Token;
-
-            //Save token in cookies
-            httpContext.Response.Cookies.Append("tasty-cookies",token);
+            cookieHandler.SetCookie(CookieProps.CookieName, token, 7);
             return Ok(request.Login);
         }
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            await auth.Logout();
+            cookieHandler.RemoveCookie(CookieProps.CookieName);
+            return Ok();
+        }
 
-        [HttpGet]
+        [HttpPost]
         [Authorize]
         public IActionResult TryAuthUser()
         {

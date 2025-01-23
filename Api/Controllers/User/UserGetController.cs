@@ -1,5 +1,6 @@
 ﻿using Api.Attributes;
 using Aplication.Services;
+using Core.ConfigurationProp;
 using Core.DTO.UserDTO.Responce;
 using Core.Enums;
 using Core.ResultModels;
@@ -19,23 +20,37 @@ namespace Api.Controllers.User
         }
         [HttpGet]
         [RequirePermissions(Permission.GetUsers)]
-        public async Task<ActionResult<List<UserResponce>>> GetUsers()
+        public async Task<ActionResult<List<UserResponse>>> GetUsers()
         {
             var users = await service.GetUsers();
-            var responce = users.Select(b => new UserResponce(b.Id, b.Username, b.Email));
+            var responce = users.Select(b => new UserResponse(b.Id, b.Username, b.Email));
             return Ok(responce);
         }
+        [HttpGet("user")]
+        public async Task<ActionResult<UserResponse>> GetUser()
+        {
+            var userId = User.FindFirst(CustomClaims.UserId)?.Value;
+            var userIdGuid = Guid.Parse(userId);
+            var result = await service.GetUser(userIdGuid);
+            if(result == null)
+            {
+                return Unauthorized();
+            }
+            var response = new UserResponse(result.Id, result.Username, result.Email);
+            return Ok(response);
+        }
+
 
         [HttpGet("{id:guid}")]
         [RequirePermissions(Permission.GetUsers)]
         public async Task<ActionResult<UserResponcePassword>> GetUserById(Guid id)
         {
-            var userResponse = await service.GetUser(id);
-            if (userResponse == null)
+            var response = await service.GetUser(id);
+            if (response == null)
             {
                 return NotFound();
             }
-            var responce = new UserResponce(userResponse.Id, userResponse.Username, userResponse.Email);
+            var responce = new UserResponse(response.Id, response.Username, response.Email);
             return Ok(responce);
 
         }
@@ -43,14 +58,13 @@ namespace Api.Controllers.User
         [RequirePermissions(Permission.GetUsers)]
         public async Task<ActionResult<UserResponcePassword>> GetUserByEmailOrLogin(string login)
         {
-            var userResponse = await service.GetUserByEmailOrLogin(login);
-            if (userResponse == null)
+            var response = await service.GetUserByEmailOrLogin(login);
+            if (response == null)
             {
                 return NotFound();
             }
-            var responce = new UserResponce(userResponse.Id, userResponse.Username, userResponse.Email);
+            var responce = new UserResponse(response.Id, response.Username, response.Email);
             return Ok(responce);
-
         }
     }
 }

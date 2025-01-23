@@ -1,5 +1,6 @@
 ﻿using Api.Attributes;
 using BusinessLogic.Services;
+using Core.ConfigurationProp;
 using Core.DTO.TaskDTO;
 using Core.Enums;
 using Core.ResultModels;
@@ -49,7 +50,7 @@ namespace Api.Controllers.Task
         [RequirePermissions(Permission.Read)]
         public async Task<ActionResult<List<TaskResponse>>> GetUserTasks()
         {
-            var userId = User.FindFirst("userId")?.Value;
+            var userId = User.FindFirst(CustomClaims.UserId)?.Value;
             var userIdGuid = new Guid(userId);
             var tasks = await service.GetUserTasks(userIdGuid);
             if (tasks == null)

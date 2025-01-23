@@ -115,7 +115,7 @@ builder.Services.Configure<CacheOptions>(builder.Configuration.GetSection(nameof
 builder.Services.Configure<PersistanceAuthorizationOptions>(builder.Configuration.GetSection(nameof(PersistanceAuthorizationOptions)));
 
 
-
+builder.Services.AddScoped<ICookieHandler, CookieHandler>();
 builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
 builder.Services.AddSingleton<IJwtProvider, JwtProvider>();
 builder.Services.AddSingleton<IEmailSender, EmailSender>();
