@@ -1,6 +1,9 @@
-﻿using Aplication.Services.User;
+﻿using Api.Attributes;
+using Aplication.Services.User;
 using Core.DTO.UserDTO;
+using Core.Enums;
 using Core.ResultModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers.User
@@ -16,7 +19,9 @@ namespace Api.Controllers.User
             this.service = service;
         }
         [HttpPut("{id:guid}")]
-        public async Task<ActionResult<Guid>> UpdateUser(Guid id, [FromBody] RegisterUserDto request)
+        [Authorize]
+        [RequirePermissions(Permission.GetUsers)]
+        public async Task<ActionResult<Guid>> UpdateUser(Guid id, [FromBody] UserIdDto request)
         {
             ResultModel result;
             try
@@ -51,7 +56,9 @@ namespace Api.Controllers.User
             }
             return Ok(id);
         }
+        [RequirePermissions(Permission.GetUsers)]
         [HttpPut]
+        [Authorize]
         public async Task<ActionResult<string>> UpdateUserPassword(ResetPasswordDto request)
         {
             ResultModel result;
@@ -69,6 +76,8 @@ namespace Api.Controllers.User
         }
 
         [HttpDelete("{id:guid}")]
+        [Authorize]
+        //[RequirePermissions(Permission.GetUsers)]
         public async Task<ActionResult<ResultModel>> DeleteUser(Guid id)
         {
             var responce = await service.DeleteUser(id);
@@ -76,7 +85,7 @@ namespace Api.Controllers.User
             {
                 return NotFound();
             }
-            return Ok(responce);
+            return NoContent();
         }
     }
 }

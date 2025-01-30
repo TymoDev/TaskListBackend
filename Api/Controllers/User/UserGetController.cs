@@ -19,24 +19,28 @@ namespace Api.Controllers.User
             this.service = service;
         }
         [HttpGet]
-        [RequirePermissions(Permission.GetUsers)]
+        //[RequirePermissions(Permission.GetUsers)]
         public async Task<ActionResult<List<UserDto>>> GetUsers()
         {
             var users = await service.GetUsers();
-            var responce = users.Select(b => new UserDto(b.Id, b.Username, b.Email));
+            var responce = users.Select(b => new UserDto(b.Id, b.Login, b.Email));
             return Ok(responce);
         }
         [HttpGet("user")]
         public async Task<ActionResult<UserDto>> GetUser()
         {
             var userId = User.FindFirst(CustomClaims.UserId)?.Value;
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized();
+            }
             var userIdGuid = Guid.Parse(userId);
             var result = await service.GetUser(userIdGuid);
             if(result == null)
             {
                 return Unauthorized();
             }
-            var response = new UserDto(result.Id, result.Username, result.Email);
+            var response = new UserDto(result.Id, result.Login, result.Email);
             return Ok(response);
         }
 
@@ -50,7 +54,7 @@ namespace Api.Controllers.User
             {
                 return NotFound();
             }
-            var responce = new UserDto(response.Id, response.Username, response.Email);
+            var responce = new UserDto(response.Id, response.Login, response.Email);
             return Ok(responce);
 
         }
@@ -63,7 +67,7 @@ namespace Api.Controllers.User
             {
                 return NotFound();
             }
-            var responce = new UserDto(response.Id, response.Username, response.Email);
+            var responce = new UserDto(response.Id, response.Login, response.Email);
             return Ok(responce);
         }
     }

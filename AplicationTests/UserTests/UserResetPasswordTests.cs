@@ -6,6 +6,7 @@ using Infrastracture.Caching;
 using Infrastracture.EmailLogic;
 using Infrastracture.Logic.CodesGeneration;
 using Aplication.Services.User;
+using Core.Interfaces.Logging;
 
 [TestFixture]
 public class UserResetPasswordServiceTests
@@ -13,6 +14,7 @@ public class UserResetPasswordServiceTests
     private Mock<ICodeGenerator> _mockCodeGenerator;
     private Mock<ICacher> _mockCacher;
     private Mock<IEmailSender> _mockEmailSender;
+    private Mock<IAppLogger> _mockLogger;
     private UserResetPasswordService _service;
 
     [SetUp]
@@ -21,7 +23,8 @@ public class UserResetPasswordServiceTests
         _mockCodeGenerator = new Mock<ICodeGenerator>();
         _mockCacher = new Mock<ICacher>();
         _mockEmailSender = new Mock<IEmailSender>();
-        _service = new UserResetPasswordService(_mockCodeGenerator.Object, _mockCacher.Object, _mockEmailSender.Object);
+        _mockLogger = new Mock<IAppLogger>();
+        _service = new UserResetPasswordService(_mockCodeGenerator.Object, _mockCacher.Object, _mockEmailSender.Object,_mockLogger.Object);
     }
 
     [Test]

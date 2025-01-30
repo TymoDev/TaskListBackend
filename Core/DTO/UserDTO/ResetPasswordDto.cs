@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace Core.DTO.UserDTO
 {
-    public record ResetPasswordDto(string Email, string Password);
+    public record ResetPasswordDto(string Email, string Code);
 }

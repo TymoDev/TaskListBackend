@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace Core.DTO.UserDTO
 {
-    public record UserPasswordDto(Guid Id, string Username, string Email, string Password);
+    public record UserPasswordDto(Guid Id, string Login, string Email, string Password);
 }

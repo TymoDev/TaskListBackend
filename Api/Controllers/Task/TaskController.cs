@@ -72,7 +72,7 @@ namespace Api.Controllers.Task
             {
                 return BadRequest(result.ErrorMessage);
             }
-            return Ok(result.Data);
+            return Ok(result);
         }
 
         [HttpPut("{id:guid}")]
@@ -91,7 +91,7 @@ namespace Api.Controllers.Task
             {
                 return BadRequest(result.ErrorMessage);
             }
-            return Ok(result);
+            return Ok(result.Data);
         }
 
         [HttpDelete("{id:guid}")]
@@ -106,7 +106,7 @@ namespace Api.Controllers.Task
             {
                 return NotFound();
             }
-            return Ok(id);
+            return NoContent();
         }
     }
 }

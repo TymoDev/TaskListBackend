@@ -62,14 +62,14 @@ namespace Aplication.Services.User
         {
             logger.Information($"Updating password for user with email: {request.Email}");
 
-            var validationResult = UserPasswordModel.Create(request.Password);
+            var validationResult = UserPasswordModel.Create(request.Code);
             if (!validationResult.Success)
             {
                 logger.Warning($"Password validation failed for email: {request.Email}, Error: {validationResult.ErrorMessage}");
                 return ResultModel.Error(validationResult.ErrorMessage);
             }
 
-            var passwordHash = hasher.Generate(request.Password);
+            var passwordHash = hasher.Generate(request.Code);
             logger.Information($"Generated password hash for email: {request.Email}");
 
             var result = await repository.UpdateUserPassword(request.Email, passwordHash);

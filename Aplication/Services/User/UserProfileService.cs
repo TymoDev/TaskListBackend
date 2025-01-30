@@ -24,14 +24,14 @@ namespace Aplication.Services.User
         public async Task<UserProfileDto?> GetUserProfile(Guid id)
         {
             logger.Information($"Fetching user with ID: {id}");
-            var responce = await repository.GetUserProfile(id);
-            if (responce == null)
+            var response = await repository.GetUserProfile(id);
+            if (response == null)
             {
                 logger.Warning($"User with ID: {id} not found");
                 return null;
             }
             logger.Information($"User with ID: {id} fetched successfully");
-            return responce;
+            return response;
         }
     }
 }

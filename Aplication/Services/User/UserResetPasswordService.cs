@@ -69,7 +69,7 @@ namespace Aplication.Services.User
                 }
             }
             catch (Exception ex)
-            {
+             {
                 logger.Error($"Unexpected exception during reset code verification for email: {email}: {ex.Message}");
                 return ResultModel.Error($"Unexpected exception: {ex.Message}");
             }

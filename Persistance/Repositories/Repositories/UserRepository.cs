@@ -72,21 +72,21 @@ namespace Persistance.Repositories.Repositories
             var userEntity = new UserEntity
             {
                 Id = userId,
-                Login = data.Login,
-                Email = data.Email,
-                PasswordHash = data.Password,
+                Login = data.login,
+                Email = data.email,
+                PasswordHash = data.password,
                 Roles = [roleEntity],
                 Profile = new UserProfileEntity
                 {
-                    Id = profileId,
-                    Username = data.Username,
-                    Gender = data.Gender,
-                    Location = data.Location,
-                    Description = data.Description,
-                    TwitterUrl = data.TwitterUrl,
-                    LinkedInUrl = data.LinkedInUrl,
-                    GitHubUrl = data.GitHubUrl,
-                    PersonalWebsiteUrl = data.PersonalWebsiteUrl,
+                    Username = data.username,
+                    Gender = data.gender,
+                    Birthday = data.birthday,
+                    Location = data.location,
+                    Description = data.description,
+                    TwitterUrl = data.twitterUrl,
+                    LinkedInUrl = data.linkedInUrl,
+                    GitHubUrl = data.gitHubUrl,
+                    PersonalWebsiteUrl = data.personalWebsiteUrl,
                     UserId = userId
                 }
             };       

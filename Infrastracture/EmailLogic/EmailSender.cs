@@ -1,4 +1,5 @@
-﻿using MailKit.Net.Smtp;
+﻿using Core.Interfaces.Logging;
+using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.Extensions.Options;
 using MimeKit;
@@ -8,25 +9,35 @@ namespace Infrastracture.EmailLogic
 {
     public class EmailSender : IEmailSender
     {
-        private readonly IOptions<EmailOptions> options;
+        private readonly IOptions<EmailOptions> _options;
+        private readonly IAppLogger _logger;
 
-        public EmailSender(IOptions<EmailOptions> options)
+        public EmailSender(IOptions<EmailOptions> _options,IAppLogger _logger)
         {
-            this.options = options;
+            this._options = _options;
+            this._logger = _logger;
         }
         public void SendMail(string mail, string subject, string body)
         {
-            var email = new MimeMessage();
-            email.From.Add(MailboxAddress.Parse(options.Value.FromEmail));
-            email.To.Add(MailboxAddress.Parse(mail));
-            email.Subject = subject;
-            email.Body = new TextPart(TextFormat.Html) { Text = body };
+            try{
+                var email = new MimeMessage();
+                email.From.Add(MailboxAddress.Parse(_options.Value.FromEmail));
+                email.To.Add(MailboxAddress.Parse(mail));
+                email.Subject = subject;
+                email.Body = new TextPart(TextFormat.Html) { Text = body };
 
-            using var smtp = new SmtpClient();
-            smtp.Connect(options.Value.SmtpServer, options.Value.Port, SecureSocketOptions.StartTls);
-            smtp.Authenticate(options.Value.FromEmail, options.Value.Password);
-            smtp.Send(email);
-            smtp.Disconnect(true);
+                using var smtp = new SmtpClient();
+                smtp.Connect(_options.Value.SmtpServer, _options.Value.Port, SecureSocketOptions.StartTls);
+                smtp.Authenticate(_options.Value.FromEmail, _options.Value.Password);
+                smtp.Send(email);
+                smtp.Disconnect(true);
+            }
+            catch (Exception ex)
+            {
+                _logger.Critical(ex.Message);
+                throw;
+            }
+            
         }
     }
 }

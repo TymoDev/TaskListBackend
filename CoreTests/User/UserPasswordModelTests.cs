@@ -16,7 +16,7 @@ namespace CoreTests.User
         }
 
         [Test]
-        public void Test1()
+        public void TaskModelPasswordValidationTests()
         {
             //Arrange
             string validPassword = "TestPas1123";

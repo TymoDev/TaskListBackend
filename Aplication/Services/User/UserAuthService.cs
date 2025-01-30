@@ -25,25 +25,25 @@ namespace Aplication.Services.User
 
         public async Task<LoginResultModel> Register(Guid userId,Guid profileId, RegisterUserWithProfileDto request)
         {
-            logger.Information($"Registering user with email: {request.Email}");
+            logger.Information($"Registering user with email: {request.email}");
 
-            var userModelResult = UsernameModel.Create(request.Login);
+            var userModelResult = UsernameModel.Create(request.login);
             if (!userModelResult.Success)
             {
                 logger.Error($"Username validation failed: {userModelResult.ErrorMessage}");
                 return LoginResultModel.Error(userModelResult.ErrorMessage);
             }
 
-            var result = UserPasswordModel.Create(request.Password);
+            var result = UserPasswordModel.Create(request.password);
             if (!result.Success)
             {
                 logger.Error($"Password validation failed: {result.ErrorMessage}");
                 return LoginResultModel.Error(result.ErrorMessage);
             }
 
-            var hashedPassword = hasher.Generate(request.Password);
-            logger.Information($"Creating user with ID: {userId} and username: {request.Login}");
-            await repository.CreateUser(userId, profileId, new RegisterUserWithProfileDto(request.Login,request.Email,hashedPassword,request.Description,request.TwitterUrl,request.LinkedInUrl,request.GitHubUrl,request.PersonalWebsiteUrl));
+            var hashedPassword = hasher.Generate(request.password);
+            logger.Information($"Creating user with ID: {userId} and username: {request.login}");
+            await repository.CreateUser(userId, profileId, new RegisterUserWithProfileDto(request.login,request.email, hashedPassword, request.username,request.gender,request.birthday,request.location,request.description,request.twitterUrl,request.linkedInUrl,request.gitHubUrl,request.personalWebsiteUrl));
 
             var user = await repository.GetUserById(userId);
             var token = jwtProvider.GenerateAuthenticateToken(user);

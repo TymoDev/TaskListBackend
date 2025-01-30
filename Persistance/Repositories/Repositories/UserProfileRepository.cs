@@ -20,7 +20,7 @@ namespace Persistance.Repositories.Repositories
         }
         public async Task<UserProfileDto?> GetUserProfile(Guid userId)
         {
-            return await GetById(userId, userProfile => new UserProfileDto(userId, userProfile.Description, userProfile.TwitterUrl, userProfile.LinkedInUrl, userProfile.GitHubUrl, userProfile.PersonalWebsiteUrl));
+            return await GetById(userId, userProfile => new UserProfileDto(userId,userProfile.Username,userProfile.Gender,userProfile.Birthday,userProfile.Location, userProfile.Description, userProfile.TwitterUrl, userProfile.LinkedInUrl, userProfile.GitHubUrl, userProfile.PersonalWebsiteUrl));
         }
     }
 }

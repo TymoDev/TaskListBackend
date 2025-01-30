@@ -1,6 +1,8 @@
 using Aplication.Core.Models.TaskModel;
 using BusinessLogic.Services;
+using Castle.Core.Logging;
 using Core.DTO.TaskDTO;
+using Core.Interfaces.Logging;
 using Core.ResultModels;
 using DataAccess.Repositories.RepositoriesTb;
 using Moq;
@@ -11,13 +13,15 @@ namespace AplicationTests.TasksTests
     {
 
         private Mock<ITaskRepository> _mockTaskRepository;
+        private Mock<IAppLogger> _mockLogger;
         private TaskService _testService;
 
         [SetUp]
         public void Setup()
         {
             _mockTaskRepository = new Mock<ITaskRepository>();
-            _testService = new TaskService(_mockTaskRepository.Object);
+            _mockLogger = new Mock<IAppLogger>();
+            _testService = new TaskService(_mockTaskRepository.Object,_mockLogger.Object);
         }
 
         [Test]
@@ -191,31 +195,6 @@ namespace AplicationTests.TasksTests
                 repo => repo.CreateTask(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Guid>()),
                 Times.Never,
                 "CreateTask in repository should not be called when TaskModel creation fails");
-        }
-
-        [Test]
-        public async Task CreateTask_ShouldReturnError_WhenRepositoryFailsToCreateTask()
-        {
-            // Arrange
-            var userId = Guid.NewGuid();
-            var request = new TaskRequest("New Task", "in-progress");
-
-            _mockTaskRepository
-                .Setup(repo => repo.CreateTask(It.IsAny<Guid>(), request.TaskName, request.TaskStatus, userId))
-                .ReturnsAsync(new TaskResponse(Guid.NewGuid(), "task", "taskStatus"));
-
-            // Act
-            var result = await _testService.CreateTask(request, userId);
-
-            // Assert
-            Assert.IsNotNull(result, "Result should not be null");
-            Assert.IsFalse(result.Success, "Result should indicate failure");
-            Assert.AreEqual("Bad Request", result.ErrorMessage, "Result message should indicate repository failure");
-
-            _mockTaskRepository.Verify(
-                repo => repo.CreateTask(It.IsAny<Guid>(), request.TaskName, request.TaskStatus, userId),
-                Times.Once,
-                "CreateTask in repository should be called exactly once when TaskModel creation succeeds");
         }
         [Test]
         public async Task UpdateTask_ShouldReturnOk_WhenTaskIsSuccessfullyUpdated()

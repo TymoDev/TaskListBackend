@@ -2,6 +2,7 @@
 using Core.DTO.UserDTO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Org.BouncyCastle.Asn1.Ocsp;
 
 namespace Api.Controllers.User
 {
@@ -15,11 +16,15 @@ namespace Api.Controllers.User
         {
             this.service = service;
         }
-        [HttpPost("reset/password")]
-        public async Task<IActionResult> ResetPasswordCodeCreate( ResetPasswordDto request)
+        [HttpPost("reset/password/{email}")]
+        public async Task<IActionResult> ResetPasswordCodeCreate(string email)
         {
-            var result = await service.ResetPasswordNotify(request.Email);
-            return Ok();
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                return BadRequest(new { message = "Email is required" });
+            }
+            var result = await service.ResetPasswordNotify(email);
+            return Accepted();
         }
         [HttpPost("reset/password/code")]
         public async Task<IActionResult> ResetPasswordCodeVerify(ResetPasswordVerifyDto request)
@@ -27,7 +32,7 @@ namespace Api.Controllers.User
             var result = await service.ResetPasswordVerify(request.Email,request.Code);
             if (!result.Success)
             {
-                return BadRequest(result.ErrorMessage);
+                return Forbid();
             }
             return Ok();
         }

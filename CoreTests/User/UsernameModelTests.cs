@@ -17,7 +17,7 @@ namespace CoreTests
         }
 
         [Test]
-        public void Test1()
+        public void UserModelUsernameValidationTests()
         {
             //Arrange
             string validUsername = "TestTask1";

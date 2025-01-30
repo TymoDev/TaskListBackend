@@ -10,8 +10,10 @@ services:
       - "7072:7072"
     container_name: Api
     environment:
-    - DOTNET_APPSETTINGS_FILE=/app/appsettings.json
-    - ASPNETCORE_ENVIRONMENT=Docker
+      - DOTNET_APPSETTINGS_FILE=/app/appsettings.json
+      - ASPNETCORE_ENVIRONMENT=Docker
+    env_file: 
+      - ./Api/.env 
     volumes:
       - ./Api/appsettings.Docker.json:/app/appsettings.json:ro
       - ./Api/Persistance:/app/Persistance
@@ -19,6 +21,7 @@ services:
       - redis
       - elasticsearch
       - kibana
+      - azurite
     networks:
     - elastic
 
@@ -28,6 +31,8 @@ services:
     ports:
       - "6379:6379"
     command: ["redis-server"]
+    networks:
+    - elastic
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.10.2
@@ -54,10 +59,29 @@ services:
     - elastic
     ports:
       - "5601:5601"
+
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite
+    container_name: azurite
+    ports:
+      - "10000:10000" # Blob Storage
+      - "10001:10001" # Queue Storage
+      - "10002:10002" # Table Storage
+    volumes:
+      - azurite-data:/data
+    command: >
+      azurite
+      --blobHost 0.0.0.0
+      --queueHost 0.0.0.0
+      --tableHost 0.0.0.0
+    networks:
+      - elastic
+
 networks:
   elastic:
     driver: bridge
 
 volumes:
   elasticsearch-data:
+  azurite-data:
 
