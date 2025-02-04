@@ -12,16 +12,16 @@ namespace AplicationTests.TasksTests
     public class TaskServiceTests
     {
 
-        private Mock<ITaskRepository> _mockTaskRepository;
+        private Mock<ITaskListRepository> _mockTaskRepository;
         private Mock<IAppLogger> _mockLogger;
-        private TaskService _testService;
+        private TaskListService _testService;
 
         [SetUp]
         public void Setup()
         {
-            _mockTaskRepository = new Mock<ITaskRepository>();
+            _mockTaskRepository = new Mock<ITaskListRepository>();
             _mockLogger = new Mock<IAppLogger>();
-            _testService = new TaskService(_mockTaskRepository.Object,_mockLogger.Object);
+            _testService = new TaskListService(_mockTaskRepository.Object,_mockLogger.Object);
         }
 
         [Test]

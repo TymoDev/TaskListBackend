@@ -3,7 +3,7 @@ using Core.ResultModels;
 
 namespace BusinessLogic.Services
 {
-    public interface ITaskService
+    public interface ITaskListService
     {
         Task<ResultModelObject<TaskResponse>> CreateTask(TaskRequest request, Guid userId);
         Task<ResultModel?> DeleteTask(Guid id, Guid userId);

@@ -1,5 +1,6 @@
 ﻿using Api.Extensions;
 using Aplication.Services;
+using Aplication.Services.Task;
 using Aplication.Services.User;
 using BusinessLogic.Services;
 using Core.Enums;
@@ -115,11 +116,12 @@ builder.Services.Configure<CacheOptions>(builder.Configuration.GetSection(nameof
 builder.Services.Configure<PersistanceAuthorizationOptions>(builder.Configuration.GetSection(nameof(PersistanceAuthorizationOptions)));
 
 
-builder.Services.AddScoped<ICookieHandler, CookieHandler>();
+
 builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
 builder.Services.AddSingleton<IJwtProvider, JwtProvider>();
 builder.Services.AddSingleton<IEmailSender, EmailSender>();
 builder.Services.AddSingleton<IAppLogger, SerilogAppLogger>();
+builder.Services.AddSingleton<ICodeGenerator, CodeGenerator>();
 builder.Services.AddScoped<ICacher, Cacher>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserGetService, UserGetService>();
@@ -128,11 +130,14 @@ builder.Services.AddScoped<IUserAuthService, UserAuthService>();
 builder.Services.AddScoped<IUserResetPasswordService,UserResetPasswordService>();
 builder.Services.AddScoped<IUserProfileRepository, UserProfileRepository>();
 builder.Services.AddScoped<IUserProfileService, UserProfileService>();
+builder.Services.AddScoped<ICookieHandler, CookieHandler>();
 
 
-builder.Services.AddScoped<ITaskRepository, TaskRepository>();
-builder.Services.AddScoped<ITaskService, TaskService>();
-builder.Services.AddSingleton<ICodeGenerator, CodeGenerator>();
+builder.Services.AddScoped<ITaskListRepository, TaskListRepository>();
+builder.Services.AddScoped<ITaskListService, TaskListService>();
+builder.Services.AddScoped<ITaskKanbanRepository, TaskKanbanRepository>();
+builder.Services.AddScoped<ITaskKanbanService,TaskKanbanService>();
+
 
 builder.Services.AddApiAuthentication(builder.Configuration);
 builder.Services.AddApiRedis(builder.Configuration);

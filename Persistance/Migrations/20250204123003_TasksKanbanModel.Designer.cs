@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Persistance;
 
@@ -10,14 +11,16 @@ using Persistance;
 namespace Persistance.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20250204123003_TasksKanbanModel")]
+    partial class TasksKanbanModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.0");
 
-            modelBuilder.Entity("Core.Entities.Core.Entities.TaskKanbanEntity", b =>
+            modelBuilder.Entity("Core.Entities.Core.Entities.TaskPositionEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -30,8 +33,7 @@ namespace Persistance.Migrations
                     b.Property<int>("Order")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("TaskName")
-                        .IsRequired()
+                    b.Property<Guid>("TaskId")
                         .HasColumnType("TEXT");
 
                     b.Property<Guid>("UserId")
@@ -39,9 +41,11 @@ namespace Persistance.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("TaskId");
+
                     b.HasIndex("UserId");
 
-                    b.ToTable("KanbanTasks");
+                    b.ToTable("TaskPositions");
                 });
 
             modelBuilder.Entity("Core.Entities.PermissionEntity", b =>
@@ -261,13 +265,21 @@ namespace Persistance.Migrations
                     b.ToTable("UsersProfiles");
                 });
 
-            modelBuilder.Entity("Core.Entities.Core.Entities.TaskKanbanEntity", b =>
+            modelBuilder.Entity("Core.Entities.Core.Entities.TaskPositionEntity", b =>
                 {
+                    b.HasOne("Core.Entities.TaskEntity", "Task")
+                        .WithMany()
+                        .HasForeignKey("TaskId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Core.Entities.UserEntity", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Task");
 
                     b.Navigation("User");
                 });

@@ -14,18 +14,18 @@ using System.Text;
 public class TaskControllerTests : IDisposable
 {
     private WebApplicationFactory<Program> _factory;
-    private Mock<ITaskService> _taskServiceMock;
+    private Mock<ITaskListService> _taskServiceMock;
 
     [SetUp]
     public void Setup()
     {
-        _taskServiceMock = new Mock<ITaskService>();
+        _taskServiceMock = new Mock<ITaskListService>();
 
         _factory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
         {
             builder.ConfigureServices(services =>
             {
-                var serviceDescriptor = services.SingleOrDefault(d => d.ServiceType == typeof(ITaskService));
+                var serviceDescriptor = services.SingleOrDefault(d => d.ServiceType == typeof(ITaskListService));
                 if (serviceDescriptor != null)
                 {
                     services.Remove(serviceDescriptor);

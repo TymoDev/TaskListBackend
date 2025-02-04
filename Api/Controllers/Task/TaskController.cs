@@ -14,9 +14,9 @@ namespace Api.Controllers.Task
     
     public class TasksController : ControllerBase
     {
-        private readonly ITaskService service;
+        private readonly ITaskListService service;
 
-        public TasksController(ITaskService service)
+        public TasksController(ITaskListService service)
         {
             this.service = service;
         }
@@ -35,7 +35,7 @@ namespace Api.Controllers.Task
         [RequirePermissions(Permission.Read)]
         public async Task<ActionResult<TaskResponse>> GetTask(Guid id)
         {
-            var userId = User.FindFirst("userId")?.Value;
+            var userId = User.FindFirst(CustomClaims.UserId)?.Value;
             var userIdGuid = new Guid(userId);
             var task = await service.GetTask(id, userIdGuid);
             if (task == null)
@@ -63,9 +63,9 @@ namespace Api.Controllers.Task
         [HttpPost]
         [Authorize]
         [RequirePermissions(Permission.Write)]
-        public async Task<ActionResult<Guid>> CreateTask([FromBody] TaskRequest request)
+        public async Task<ActionResult<ResultModelObject<TaskResponse>>> CreateTask([FromBody] TaskRequest request)
         {
-            var userId = User.FindFirst("userId")?.Value;
+            var userId = User.FindFirst(CustomClaims.UserId)?.Value;
             var userIdGuid = new Guid(userId);
             var result = await service.CreateTask(request,userIdGuid);
             if (!result.Success)
@@ -80,7 +80,7 @@ namespace Api.Controllers.Task
         [RequirePermissions(Permission.Write)]
         public async Task<ActionResult<TaskResponse>> UpdateTask(Guid id, [FromBody] TaskRequest request)
         {
-            var userId = User.FindFirst("userId")?.Value;
+            var userId = User.FindFirst(CustomClaims.UserId)?.Value;
             var userIdGuid = new Guid(userId);
             var result = await service.UpdateTask(id, userIdGuid, request);
             if (result == null)
@@ -99,7 +99,7 @@ namespace Api.Controllers.Task
         [RequirePermissions(Permission.Write)]
         public async Task<ActionResult<Guid>> DeleteTask(Guid id)
         {
-            var userId = User.FindFirst("userId")?.Value;
+            var userId = User.FindFirst(CustomClaims.UserId)?.Value;
             var userIdGuid = new Guid(userId);
             var result = await service.DeleteTask(id, userIdGuid);
             if (result == null)

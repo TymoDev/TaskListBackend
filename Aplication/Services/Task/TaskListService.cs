@@ -6,12 +6,12 @@ using DataAccess.Repositories.RepositoriesTb;
 
 namespace BusinessLogic.Services
 {
-    public class TaskService : ITaskService
+    public class TaskListService : ITaskListService
     {
-        private readonly ITaskRepository repository;
+        private readonly ITaskListRepository repository;
         private readonly IAppLogger logger;
 
-        public TaskService(ITaskRepository repository,IAppLogger logger)
+        public TaskListService(ITaskListRepository repository,IAppLogger logger)
         {
             this.repository = repository;
             this.logger = logger;

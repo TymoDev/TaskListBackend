@@ -1,4 +1,5 @@
 ﻿using Core.Entities;
+using Core.Entities.Core.Entities;
 using DataAccess.Configurations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -13,6 +14,7 @@ namespace Persistance
     {
         public DbSet<UserEntity> Users { get; set; }
         public DbSet<TaskEntity> Tasks { get; set; }
+        public DbSet<TaskKanbanEntity> KanbanTasks { get; set; }
         public DbSet<RoleEntity> Roles { get; set; }
         public DbSet<UserProfileEntity> UsersProfiles { get; set; }
 

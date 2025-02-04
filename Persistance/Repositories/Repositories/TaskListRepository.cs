@@ -12,11 +12,11 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Repositories.RepositoriesTb
 {
-    public class TaskRepository : CrudAbstractions<TaskEntity>, ITaskRepository
+    public class TaskListRepository : CrudAbstractions<TaskEntity>, ITaskListRepository
     {
         private readonly DataContext context;
 
-        public TaskRepository(DataContext context) : base(context, context.Tasks)
+        public TaskListRepository(DataContext context) : base(context, context.Tasks)
         {
             this.context = context;
         }

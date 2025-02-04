@@ -2,7 +2,7 @@
 
 namespace DataAccess.Repositories.RepositoriesTb
 {
-    public interface ITaskRepository
+    public interface ITaskListRepository
     {
         Task<TaskResponse?> CreateTask(Guid TaskId, string taskName, string taskStatus, Guid userId);
         Task<Guid?> DeleteTask(Guid id);
