@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Persistance.Repositories.Repositories
+namespace Persistance.Repositories.Repositories.Users
 {
     public class UserRepository : CrudAbstractions<UserEntity>, IUserRepository
     {
@@ -22,11 +22,11 @@ namespace Persistance.Repositories.Repositories
         }
         public async Task<List<UserPasswordDto>> GetUsers()
         {
-            return await Get(u => new UserPasswordDto(u.Id,u.Login,u.Email,u.PasswordHash));
+            return await Get(u => new UserPasswordDto(u.Id, u.Login, u.Email, u.PasswordHash));
         }
         public async Task<UserPasswordDto?> GetUserById(Guid id)
         {
-            return await GetById(id,u => new UserPasswordDto(u.Id, u.Login, u.Email,u.PasswordHash));
+            return await GetById(id, u => new UserPasswordDto(u.Id, u.Login, u.Email, u.PasswordHash));
         }
         public async Task<UserPasswordDto?> GetUserByEmailOrUsername(string login)
         {
@@ -41,7 +41,7 @@ namespace Persistance.Repositories.Repositories
         public async Task<Guid?> UpdateUser(UserHashDto userData)
         {
             var user = GetById(userData.Id, u => u);
-            if(user == null)
+            if (user == null)
             {
                 return null;
             }
@@ -52,18 +52,18 @@ namespace Persistance.Repositories.Repositories
                 OldData.Email = userData.Email;
             });
         }
-        public async Task<string?> UpdateUserPassword(string email,string password)
+        public async Task<string?> UpdateUserPassword(string email, string password)
         {
             var user = await context.Users.SingleOrDefaultAsync(u => u.Email == email);
-            if(user == null)
+            if (user == null)
             {
                 return null;
             }
             user.PasswordHash = password;
             await context.SaveChangesAsync();
-            return user.Email;        
+            return user.Email;
         }
-        public async Task<Guid?> CreateUser(Guid userId,Guid profileId,RegisterUserWithProfileDto data)
+        public async Task<Guid?> CreateUser(Guid userId, Guid profileId, RegisterUserWithProfileDto data)
         {
             var roleEntity = await context.Roles
             .SingleOrDefaultAsync(r => r.Id == (int)Role.User)
@@ -89,7 +89,7 @@ namespace Persistance.Repositories.Repositories
                     PersonalWebsiteUrl = data.personalWebsiteUrl,
                     UserId = userId
                 }
-            };       
+            };
             return await Create(userEntity);
         }
 

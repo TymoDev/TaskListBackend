@@ -1,5 +1,6 @@
 ﻿using Core.DTO.TaskDTO;
 using Core.Entities;
+using DataAccess.Repositories.RepositoriesTb;
 using Microsoft.EntityFrameworkCore;
 using Persistance;
 using Persistance.Repositories.AbstractRepositories;
@@ -10,7 +11,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataAccess.Repositories.RepositoriesTb
+namespace Persistance.Repositories.Repositories.Tasks
 {
     public class TaskListRepository : CrudAbstractions<TaskEntity>, ITaskListRepository
     {
@@ -50,7 +51,7 @@ namespace DataAccess.Repositories.RepositoriesTb
             }
             return task;
         }
-        public async Task<TaskResponse?> CreateTask(Guid TaskId, string taskName, string taskStatus,Guid userId)
+        public async Task<TaskResponse?> CreateTask(Guid TaskId, string taskName, string taskStatus, Guid userId)
         {
             var user = await context.Users.FindAsync(userId);
             if (user == null)
@@ -65,7 +66,7 @@ namespace DataAccess.Repositories.RepositoriesTb
                 UserId = userId
             };
             await Create(userEntity);
-            return new TaskResponse(TaskId,taskName,taskStatus);
+            return new TaskResponse(TaskId, taskName, taskStatus);
         }
         public async Task<TaskResponse?> UpdateTask(Guid id, string taskName, string taskStatus)
         {

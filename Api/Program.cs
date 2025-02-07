@@ -25,6 +25,8 @@ using Microsoft.Extensions.Options;
 using Persistance;
 using Persistance.Options;
 using Persistance.Repositories.Repositories;
+using Persistance.Repositories.Repositories.Tasks;
+using Persistance.Repositories.Repositories.Users;
 using Serilog;
 using Serilog.Exceptions;
 using Serilog.Sinks.Elasticsearch;
@@ -136,6 +138,8 @@ builder.Services.AddScoped<ICookieHandler, CookieHandler>();
 builder.Services.AddScoped<ITaskListRepository, TaskListRepository>();
 builder.Services.AddScoped<ITaskListService, TaskListService>();
 builder.Services.AddScoped<ITaskKanbanRepository, TaskKanbanRepository>();
+builder.Services.AddScoped<ITaskKanbanColumnRepository, TaskKanbanColumnRepository>();
+builder.Services.AddScoped<ITaskKanbanColumnService, TaskKanbanColumnService>();
 builder.Services.AddScoped<ITaskKanbanService,TaskKanbanService>();
 
 

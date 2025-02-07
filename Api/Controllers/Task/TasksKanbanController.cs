@@ -13,11 +13,11 @@ namespace Api.Controllers.Task
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class TaskKanbanController : ControllerBase
+    public class TasksKanbanController : ControllerBase
     {
         private readonly ITaskKanbanService service;
 
-        public TaskKanbanController(ITaskKanbanService service)
+        public TasksKanbanController(ITaskKanbanService service)
         {
             this.service = service;
         }
@@ -35,11 +35,12 @@ namespace Api.Controllers.Task
         [Authorize]
         [HttpPost]
         [RequirePermissions(Permission.Write)]
-        public async Task<ActionResult<ResultModelObject<TaskKanbanOrderDto>>> CreateUserKanbanTask([FromBody] TaskKanbanDto request)
+        public async Task<ActionResult<ResultModelObject<TaskKanbanOrderDto>>> CreateUserKanbanTask([FromBody] TaskKanbanCreateDto request)
         {
             var userId = User.FindFirst(CustomClaims.UserId)?.Value;
             var userIdGuid = new Guid(userId);
-            var tasks = await service.CreateUserTasks(request,userIdGuid);
+            var prop = new TaskKanbanDto(Guid.NewGuid(),request.taskName,request.columnId,userIdGuid);
+            var tasks = await service.CreateUserTasks(prop,userIdGuid);
             var response = tasks.Data;
             return Ok(response);
         }
@@ -47,7 +48,7 @@ namespace Api.Controllers.Task
         [Authorize]
         [HttpDelete("{id:guid}")]
         [RequirePermissions(Permission.Write)]
-        public async Task<ActionResult<List<TaskKanbanOrderDto>>> DeleteUserKanbanTask(Guid id)
+        public async Task<ActionResult> DeleteUserKanbanTask(Guid id)
         {
             var userId = User.FindFirst(CustomClaims.UserId)?.Value;
             var userIdGuid = new Guid(userId);

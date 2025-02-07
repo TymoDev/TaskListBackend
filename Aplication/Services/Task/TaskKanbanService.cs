@@ -34,9 +34,9 @@ namespace Aplication.Services.Task
 
         public async Task<ResultModelObject<TaskKanbanOrderDto>> CreateUserTasks(TaskKanbanDto request, Guid userId)
         {
-            logger.Information($"[TaskKanbanService] Creating Kanban task for user {userId}. Task Name: \"{request.taskName}\", Column: \"{request.column}\"...");
+            logger.Information($"[TaskKanbanService] Creating Kanban task for user {userId}. Task Name: \"{request.taskName}\", Column: \"{request.columnId}\"...");
 
-            var response = await repository.CreateTask(request.taskName, request.column, userId);
+            var response = await repository.CreateTask(request.taskName, request.columnId, userId);
 
             if (response == null)
             {

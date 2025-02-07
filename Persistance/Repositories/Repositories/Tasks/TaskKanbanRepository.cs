@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Persistance.Repositories.Repositories
+namespace Persistance.Repositories.Repositories.Tasks
 {
     public class TaskKanbanRepository : ITaskKanbanRepository
     {
@@ -29,22 +29,22 @@ namespace Persistance.Repositories.Repositories
                 return null;
             }
             var kanbanTasks = await context.KanbanTasks
-             .Where(tp => tp.UserId == userId)
-             .Select(tp => new TaskKanbanOrderDto(tp.Id, tp.TaskName, tp.Column, tp.Order, tp.UserId))
+             .Select(tp => new TaskKanbanOrderDto(tp.Id, tp.TaskName, tp.ColumnId, tp.Order, tp.UserId))
              .ToListAsync();
             return kanbanTasks;
         }
 
 
-        public async Task<TaskKanbanOrderDto?> CreateTask(string taskName, string column, Guid userId)
+        public async Task<TaskKanbanOrderDto?> CreateTask(string taskName, Guid columnId, Guid userId)
         {
             var user = await context.Users.FindAsync(userId);
+            var column = await context.KanbanColumns.FindAsync(columnId);
             if (user == null)
             {
                 return null;
             }
 
-            var order = await GetNextOrderInColumn(column, userId);
+            var order = await GetNextOrderInColumn(columnId, userId);
             var newKanbanTask = new TaskKanbanEntity
             {
                 Id = Guid.NewGuid(),
@@ -56,14 +56,14 @@ namespace Persistance.Repositories.Repositories
 
             await context.KanbanTasks.AddAsync(newKanbanTask);
             await context.SaveChangesAsync();
-            
-            return new TaskKanbanOrderDto(newKanbanTask.Id, newKanbanTask.TaskName, newKanbanTask.Column, order, userId);
+
+            return new TaskKanbanOrderDto(newKanbanTask.Id, newKanbanTask.TaskName, newKanbanTask.ColumnId, order, userId);
         }
 
-        private async Task<int> GetNextOrderInColumn(string column, Guid userId)
+        private async Task<int> GetNextOrderInColumn(Guid column, Guid userId)
         {
             var maxOrder = await context.KanbanTasks
-                .Where(tp => tp.Column == column && tp.UserId == userId)
+                .Where(tp => tp.ColumnId == column && tp.UserId == userId)
                 .MaxAsync(tp => (int?)tp.Order) ?? 0;
             return maxOrder + 1;
         }
@@ -71,12 +71,6 @@ namespace Persistance.Repositories.Repositories
         {
             var task = await context.KanbanTasks.FirstOrDefaultAsync(t => t.Id == taskId);
             if (task == null) return null;
-
-            var position = await context.KanbanTasks.FirstOrDefaultAsync(tp => tp.Id == taskId);
-            if (position != null)
-            {
-                context.KanbanTasks.Remove(position);
-            }
 
             context.KanbanTasks.Remove(task);
             await context.SaveChangesAsync();

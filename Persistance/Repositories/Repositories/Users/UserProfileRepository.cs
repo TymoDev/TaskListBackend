@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Persistance.Repositories.Repositories
+namespace Persistance.Repositories.Repositories.Users
 {
     public class UserProfileRepository : CrudAbstractions<UserProfileEntity>, IUserProfileRepository
     {
@@ -20,7 +20,7 @@ namespace Persistance.Repositories.Repositories
         }
         public async Task<UserProfileDto?> GetUserProfile(Guid userId)
         {
-            return await GetById(userId, userProfile => new UserProfileDto(userId,userProfile.Username,userProfile.Gender,userProfile.Birthday,userProfile.Location, userProfile.Description, userProfile.TwitterUrl, userProfile.LinkedInUrl, userProfile.GitHubUrl, userProfile.PersonalWebsiteUrl));
+            return await GetById(userId, userProfile => new UserProfileDto(userId, userProfile.Username, userProfile.Gender, userProfile.Birthday, userProfile.Location, userProfile.Description, userProfile.TwitterUrl, userProfile.LinkedInUrl, userProfile.GitHubUrl, userProfile.PersonalWebsiteUrl));
         }
     }
 }
