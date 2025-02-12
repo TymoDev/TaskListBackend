@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace Core.DTO.TaskDTO
 {
-    public record TaskKanbanOrderDto(Guid taskId, string taskName, Guid columnId, int order, Guid userId);
+   public record TaskKanbanUpdateDto(Guid taskId, string taskName,int order, Guid columnId);
 }

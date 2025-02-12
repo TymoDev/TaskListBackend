@@ -59,23 +59,34 @@ namespace Persistance.Repositories.Repositories.Tasks
 
             return new TaskKanbanOrderDto(newKanbanTask.Id, newKanbanTask.TaskName, newKanbanTask.ColumnId, order, userId);
         }
+        public async Task<ResultModel> UpdateTask(string taskName, int order, Guid columnId, Guid taskId)
+        {
+            var task = await context.KanbanTasks.FindAsync(taskId);
 
+            task.TaskName = taskName;
+            task.ColumnId = columnId;
+            task.Order = order;
+            await context.SaveChangesAsync();
+            
+            return ResultModel.Ok();
+
+        }
+   
+        public async Task<ResultModel> DeleteTask(Guid taskId)
+        {
+            var task = await context.KanbanTasks.FirstOrDefaultAsync(t => t.Id == taskId);
+
+            context.KanbanTasks.Remove(task);
+            await context.SaveChangesAsync();
+
+            return ResultModel.Ok();
+        }
         private async Task<int> GetNextOrderInColumn(Guid column, Guid userId)
         {
             var maxOrder = await context.KanbanTasks
                 .Where(tp => tp.ColumnId == column && tp.UserId == userId)
                 .MaxAsync(tp => (int?)tp.Order) ?? 0;
             return maxOrder + 1;
-        }
-        public async Task<ResultModel?> DeleteTask(Guid taskId)
-        {
-            var task = await context.KanbanTasks.FirstOrDefaultAsync(t => t.Id == taskId);
-            if (task == null) return null;
-
-            context.KanbanTasks.Remove(task);
-            await context.SaveChangesAsync();
-
-            return ResultModel.Ok();
         }
     }
 }

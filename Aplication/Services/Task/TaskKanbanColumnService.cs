@@ -1,6 +1,7 @@
 ﻿using Core.DTO.TaskDTO;
 using Core.Interfaces.Logging;
 using Core.ResultModels;
+using Core.ValidationModels.Task;
 using Persistance.Repositories.Repositories;
 using Persistance.Repositories.Repositories.Tasks;
 using System;
@@ -22,7 +23,7 @@ namespace Aplication.Services.Task
             this.logger = logger;
         }
 
-        public async Task<List<KanbanColumnDto>?> GetUserColumns(Guid userId)
+        public async Task<List<KanbanColumnDto>?> GetColumns(Guid userId)
         {
             logger.Information($"[TaskKanbanColumnService] Fetching Kanban columns for user: {userId}");
 
@@ -36,7 +37,7 @@ namespace Aplication.Services.Task
             return response;
         }
 
-        public async Task<ResultModelObject<KanbanColumnDto>> CreateUserColumns(KanbanColumnDto request, Guid userId)
+        public async Task<ResultModelObject<KanbanColumnDto>> CreateColumn(KanbanColumnDto request, Guid userId)
         {
             logger.Information($"[TaskKanbanColumnService] Creating new Kanban column. User: {userId}, Column Name: '{request.name}', Position: {request.position}");
 
@@ -52,7 +53,31 @@ namespace Aplication.Services.Task
             return ResultModelObject<KanbanColumnDto>.Ok(response);
         }
 
-        public async Task<ResultModel?> DeleteUserColumns(Guid id, Guid userId)
+        public async Task<ResultModel?> UpdateColumn(Guid userId,KanbanColumnDto request)
+        {
+            logger.Information($"Updating column with ID: {request.id} for user: {userId}");
+            var userColumns = await repository.GetUserColumns(userId);
+            if(userColumns == null)
+            {
+
+                return null;
+            }
+
+            var isUserColumnsExist = userColumns.FirstOrDefault(ut => ut.id == request.id);
+            if (isUserColumnsExist == null)
+            {
+                logger.Warning($"Column with ID: {request.id} for user: {userId} not found");
+                return ResultModel.Error("Sorry, but user don't have this column");
+            }
+
+            await repository.UpdateTask(request.id,request.name,request.position);
+
+            logger.Information($"Column with ID: {request.id} updated successfully");
+            return ResultModel.Ok();
+
+        }
+
+        public async Task<ResultModel?> DeleteColumn(Guid id, Guid userId)
         {
             logger.Information($"[TaskKanbanColumnService] Request to delete Kanban column. Column ID: {id}, User: {userId}");
 

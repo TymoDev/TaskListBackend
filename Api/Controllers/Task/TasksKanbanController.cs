@@ -21,17 +21,19 @@ namespace Api.Controllers.Task
         {
             this.service = service;
         }
+
         [Authorize]
         [HttpGet("user")]
         [RequirePermissions(Permission.Read)]
-        public async Task<ActionResult<List<TaskKanbanOrderDto>>> GetUserKanbanTasks()
+        public async Task<ActionResult<List<TaskKanbanGetDto>>> GetUserKanbanTasks()
         {
             var userId = User.FindFirst(CustomClaims.UserId)?.Value;
             var userIdGuid = new Guid(userId);
             var tasks = await service.GetUserTasks(userIdGuid);
-            var response = tasks.Select(r => new TaskKanbanOrderDto(r.taskId, r.taskName, r.column,r.order,r.userId));
+            var response = tasks.Select(r => new TaskKanbanGetDto(r.taskId, r.taskName, r.columnId,r.order));
             return Ok(response);
         }
+
         [Authorize]
         [HttpPost]
         [RequirePermissions(Permission.Write)]
@@ -43,6 +45,26 @@ namespace Api.Controllers.Task
             var tasks = await service.CreateUserTasks(prop,userIdGuid);
             var response = tasks.Data;
             return Ok(response);
+        }
+
+        [HttpPut]
+        [Authorize]
+        [RequirePermissions(Permission.Write)]
+        public async Task<ActionResult> UpdateUserKanbanTask([FromBody] TaskKanbanUpdateDto request)
+        {
+            var userId = User.FindFirst(CustomClaims.UserId)?.Value;
+            var userIdGuid = new Guid(userId);
+            var result = await service.UpdateTask(userIdGuid,request);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            if (!result.Success)
+            {
+                return BadRequest(result.ErrorMessage);
+            }
+
+            return Ok();
         }
 
         [Authorize]

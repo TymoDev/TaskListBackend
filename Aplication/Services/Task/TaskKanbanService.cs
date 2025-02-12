@@ -2,6 +2,7 @@
 using Core.DTO.TaskDTO;
 using Core.Interfaces.Logging;
 using Core.ResultModels;
+using Core.ValidationModels.Task;
 using Persistance.Repositories.Repositories;
 using System;
 using System.Collections.Generic;
@@ -22,11 +23,15 @@ namespace Aplication.Services.Task
             this.logger = logger;
         }
 
-        public async Task<List<TaskKanbanOrderDto>> GetUserTasks(Guid userId)
+        public async Task<List<TaskKanbanOrderDto>?> GetUserTasks(Guid userId)
         {
             logger.Information($"[TaskKanbanService] Fetching Kanban tasks for user {userId}...");
 
             var response = await repository.GetUserTasks(userId);
+            if(response == null)
+            {
+                return null;
+            }
 
             logger.Information($"[TaskKanbanService] Retrieved {response.Count} Kanban tasks for user {userId}.");
             return response;
@@ -46,6 +51,31 @@ namespace Aplication.Services.Task
 
             logger.Information($"[TaskKanbanService] Successfully created Kanban task {response.taskId} for user {userId}.");
             return ResultModelObject<TaskKanbanOrderDto>.Ok(response);
+        }
+        
+        public async Task<ResultModel?> UpdateTask(Guid userId, TaskKanbanUpdateDto request)
+        {
+            logger.Information($"Updating task with ID: {request.taskId} for user: {userId}");
+            var userTasks = await repository.GetUserTasks(userId);
+            var isUserTaskExist = userTasks.FirstOrDefault(ut => ut.taskId == request.taskId);
+            if (isUserTaskExist == null)
+            {
+                logger.Warning($"Task with ID: {request.taskId} for user: {userId} not found");
+                return ResultModel.Error("Sorry, but user don't have this task");
+            }
+
+            var validationNameStatus = TaskKanbanModel.Create(request.taskName);
+            if (!validationNameStatus.Success)
+            {
+                logger.Error($"Task update failed: {validationNameStatus.ErrorMessage}");
+                return ResultModel.Error(validationNameStatus.ErrorMessage);
+            }
+
+            await repository.UpdateTask(request.taskName, request.order, request.columnId, request.taskId);
+
+            logger.Information($"Task with ID: {request.taskId} updated successfully");
+            return ResultModel.Ok();
+
         }
 
         public async Task<ResultModel?> DeleteUserTasks(Guid id, Guid userId)

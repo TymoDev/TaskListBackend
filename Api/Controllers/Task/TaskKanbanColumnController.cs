@@ -11,14 +11,15 @@ namespace Api.Controllers.Task
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class TaskKanbanColumnController : ControllerBase
+    public class TaskKanbanColumnsController : ControllerBase
     {
         private readonly ITaskKanbanColumnService service;
 
-        public TaskKanbanColumnController(ITaskKanbanColumnService service)
+        public TaskKanbanColumnsController(ITaskKanbanColumnService service)
         {
             this.service = service;
         }
+
         [Authorize]
         [HttpGet("user")]
         [RequirePermissions(Permission.Read)]
@@ -26,7 +27,7 @@ namespace Api.Controllers.Task
         {
             var userId = User.FindFirst(CustomClaims.UserId)?.Value;
             var userIdGuid = new Guid(userId);
-            var columns = await service.GetUserColumns(userIdGuid);
+            var columns = await service.GetColumns(userIdGuid);
             if(columns == null)
             {
                 return BadRequest();
@@ -45,7 +46,7 @@ namespace Api.Controllers.Task
                 var userId = User.FindFirst(CustomClaims.UserId)?.Value;
                 var userIdGuid = new Guid(userId);
                 var prop = new KanbanColumnDto(Guid.NewGuid(), request.name, request.position);
-                var columns = await service.CreateUserColumns(prop, userIdGuid);
+                var columns = await service.CreateColumn(prop, userIdGuid);
                 var response = columns.Data;
                 return Ok(response);
             }
@@ -60,6 +61,26 @@ namespace Api.Controllers.Task
             }                 
         }
 
+        [HttpPut]
+        [Authorize]
+        [RequirePermissions(Permission.Write)]
+        public async Task<ActionResult> UpdateUserKanbanTask([FromBody] KanbanColumnDto request)
+        {
+            var userId = User.FindFirst(CustomClaims.UserId)?.Value;
+            var userIdGuid = new Guid(userId);
+            var result = await service.UpdateColumn(userIdGuid, request);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            if (!result.Success)
+            {
+                return BadRequest(result.ErrorMessage);
+            }
+
+            return Ok();
+        }
+
         [Authorize]
         [HttpDelete("{id:guid}")]
         [RequirePermissions(Permission.Write)]
@@ -67,7 +88,7 @@ namespace Api.Controllers.Task
         {
             var userId = User.FindFirst(CustomClaims.UserId)?.Value;
             var userIdGuid = new Guid(userId);
-            var response = await service.DeleteUserColumns(id, userIdGuid);
+            var response = await service.DeleteColumn(id, userIdGuid);
             if (response == null || !response.Success)
             {
                 return NotFound();

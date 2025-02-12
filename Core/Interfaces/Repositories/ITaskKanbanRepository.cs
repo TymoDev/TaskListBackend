@@ -7,6 +7,7 @@ namespace Persistance.Repositories.Repositories
     {
         Task<List<TaskKanbanOrderDto>> GetUserTasks(Guid userId);
         Task<TaskKanbanOrderDto?> CreateTask(string taskName, Guid columnId, Guid userId);
-        Task<ResultModel?> DeleteTask(Guid taskId);
+        Task<ResultModel> UpdateTask(string taskName, int order, Guid columnId, Guid taskId);
+        Task<ResultModel> DeleteTask(Guid taskId);
     }
 }

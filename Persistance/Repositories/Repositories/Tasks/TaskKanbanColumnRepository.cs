@@ -34,7 +34,6 @@ namespace Persistance.Repositories.Repositories.Tasks
             return kanbanColumns;
         }
 
-
         public async Task<KanbanColumnDto?> CreateColumn(Guid id, Guid userId, string name, int position)
         {
             var user = await context.Users.FindAsync(userId);
@@ -54,6 +53,22 @@ namespace Persistance.Repositories.Repositories.Tasks
             await context.SaveChangesAsync();
 
             return new KanbanColumnDto(id, name, position);
+        }
+
+        public async Task<ResultModel> UpdateTask(Guid id,string name, int position) 
+        {
+            var column = await context.KanbanColumns.FirstOrDefaultAsync(u => u.Id == id);
+
+            if (column == null)
+            {
+                return ResultModel.Error("Can not find this column");
+            }
+
+            column.Name = name;
+            column.Position = position;
+            await context.SaveChangesAsync();
+
+            return ResultModel.Ok();
         }
 
         public async Task<ResultModel?> DeleteColumn(Guid taskId)

@@ -5,8 +5,9 @@ namespace Aplication.Services.Task
 {
     public interface ITaskKanbanService
     {
-        Task<List<TaskKanbanOrderDto>> GetUserTasks(Guid userId);
+        Task<List<TaskKanbanOrderDto>?> GetUserTasks(Guid userId);
         Task<ResultModelObject<TaskKanbanOrderDto>> CreateUserTasks(TaskKanbanDto request, Guid userId);
+        Task<ResultModel?> UpdateTask(Guid userId, TaskKanbanUpdateDto request);
         Task<ResultModel?> DeleteUserTasks(Guid id, Guid userId);
     }
 }
