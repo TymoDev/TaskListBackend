@@ -23,7 +23,7 @@ namespace Api.Controllers.Task
         [Authorize]
         [HttpGet("user")]
         [RequirePermissions(Permission.Read)]
-        public async Task<ActionResult<List<KanbanColumnDto>>> GetUserKanbanTasks()
+        public async Task<ActionResult<List<KanbanColumnDto>>> GetKanbanColumn()
         {
             var userId = User.FindFirst(CustomClaims.UserId)?.Value;
             var userIdGuid = new Guid(userId);
@@ -39,7 +39,7 @@ namespace Api.Controllers.Task
         [Authorize]
         [HttpPost]
         [RequirePermissions(Permission.Write)]
-        public async Task<ActionResult<ResultModelObject<KanbanColumnDto>>> CreateUserKanbanTask([FromBody] KanbanColumnCreateDto request)
+        public async Task<ActionResult<ResultModelObject<KanbanColumnDto>>> CreateKanbanColumn([FromBody] KanbanColumnCreateDto request)
         {
             try 
             {
@@ -64,7 +64,7 @@ namespace Api.Controllers.Task
         [HttpPut]
         [Authorize]
         [RequirePermissions(Permission.Write)]
-        public async Task<ActionResult> UpdateUserKanbanTask([FromBody] KanbanColumnDto request)
+        public async Task<ActionResult> UpdateKanbanColumn([FromBody] KanbanColumnDto request)
         {
             var userId = User.FindFirst(CustomClaims.UserId)?.Value;
             var userIdGuid = new Guid(userId);

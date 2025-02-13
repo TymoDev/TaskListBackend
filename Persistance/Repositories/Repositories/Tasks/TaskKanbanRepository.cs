@@ -29,8 +29,9 @@ namespace Persistance.Repositories.Repositories.Tasks
                 return null;
             }
             var kanbanTasks = await context.KanbanTasks
-             .Select(tp => new TaskKanbanOrderDto(tp.Id, tp.TaskName, tp.ColumnId, tp.Order, tp.UserId))
-             .ToListAsync();
+            .OrderBy(tp => tp.Order)
+            .Select(tp => new TaskKanbanOrderDto(tp.Id, tp.TaskName, tp.ColumnId, tp.Order, tp.UserId))
+            .ToListAsync();
             return kanbanTasks;
         }
 

@@ -20,7 +20,7 @@ namespace Persistance.Repositories.Repositories.Tasks
             this.context = context;
         }
 
-        public async Task<List<KanbanColumnDto>?> GetUserColumns(Guid userId)
+        public async Task<List<KanbanColumnDto>?> GetColumns(Guid userId)
         {
             var user = await context.KanbanColumns.FirstOrDefaultAsync(ui => ui.UserId == userId);
             if (user == null)
@@ -29,6 +29,7 @@ namespace Persistance.Repositories.Repositories.Tasks
             }
 
             var kanbanColumns = await context.KanbanColumns
+             .OrderBy(tp => tp.Position) //its more effician to do it before select, becous we will 
              .Select(tp => new KanbanColumnDto(tp.Id, tp.Name, tp.Position))
              .ToListAsync();
             return kanbanColumns;
@@ -55,7 +56,7 @@ namespace Persistance.Repositories.Repositories.Tasks
             return new KanbanColumnDto(id, name, position);
         }
 
-        public async Task<ResultModel> UpdateTask(Guid id,string name, int position) 
+        public async Task<ResultModel> UpdateColumn(Guid id,string name, int position) 
         {
             var column = await context.KanbanColumns.FirstOrDefaultAsync(u => u.Id == id);
 

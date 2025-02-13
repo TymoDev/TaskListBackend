@@ -27,7 +27,7 @@ namespace Aplication.Services.Task
         {
             logger.Information($"[TaskKanbanColumnService] Fetching Kanban columns for user: {userId}");
 
-            var response = await repository.GetUserColumns(userId);
+            var response = await repository.GetColumns(userId);
             if(response == null)
             {
                 return null;
@@ -56,7 +56,7 @@ namespace Aplication.Services.Task
         public async Task<ResultModel?> UpdateColumn(Guid userId,KanbanColumnDto request)
         {
             logger.Information($"Updating column with ID: {request.id} for user: {userId}");
-            var userColumns = await repository.GetUserColumns(userId);
+            var userColumns = await repository.GetColumns(userId);
             if(userColumns == null)
             {
 
@@ -70,7 +70,7 @@ namespace Aplication.Services.Task
                 return ResultModel.Error("Sorry, but user don't have this column");
             }
 
-            await repository.UpdateTask(request.id,request.name,request.position);
+            await repository.UpdateColumn(request.id,request.name,request.position);
 
             logger.Information($"Column with ID: {request.id} updated successfully");
             return ResultModel.Ok();
@@ -81,7 +81,7 @@ namespace Aplication.Services.Task
         {
             logger.Information($"[TaskKanbanColumnService] Request to delete Kanban column. Column ID: {id}, User: {userId}");
 
-            var userColumns = await repository.GetUserColumns(userId);
+            var userColumns = await repository.GetColumns(userId);
             var isUserTask = userColumns.FirstOrDefault(ut => ut.id == id);
 
             if (isUserTask == null)
