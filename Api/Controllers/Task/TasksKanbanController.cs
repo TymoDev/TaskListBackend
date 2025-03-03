@@ -50,7 +50,7 @@ namespace Api.Controllers.Task
         [HttpPut]
         [Authorize]
         [RequirePermissions(Permission.Write)]
-        public async Task<ActionResult> UpdateUserKanbanTask([FromBody] TaskKanbanUpdateDto request)
+        public async Task<ActionResult<ResultModelObject<TaskKanbanOrderDto>>> UpdateUserKanbanTask([FromBody] TaskKanbanUpdateDto request)
         {
             var userId = User.FindFirst(CustomClaims.UserId)?.Value;
             var userIdGuid = new Guid(userId);
@@ -64,7 +64,7 @@ namespace Api.Controllers.Task
                 return BadRequest(result.ErrorMessage);
             }
 
-            return Ok();
+            return Ok(result);
         }
 
         [Authorize]

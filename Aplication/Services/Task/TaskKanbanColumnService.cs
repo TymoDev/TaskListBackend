@@ -53,7 +53,7 @@ namespace Aplication.Services.Task
             return ResultModelObject<KanbanColumnDto>.Ok(response);
         }
 
-        public async Task<ResultModel?> UpdateColumn(Guid userId,KanbanColumnDto request)
+        public async Task<ResultModelObject<KanbanColumnDto>> UpdateColumn(Guid userId,KanbanColumnDto request)
         {
             logger.Information($"Updating column with ID: {request.id} for user: {userId}");
             var userColumns = await repository.GetColumns(userId);
@@ -67,13 +67,18 @@ namespace Aplication.Services.Task
             if (isUserColumnsExist == null)
             {
                 logger.Warning($"Column with ID: {request.id} for user: {userId} not found");
-                return ResultModel.Error("Sorry, but user don't have this column");
+                return ResultModelObject<KanbanColumnDto>.Error("Sorry, but user don't have this column");
             }
 
-            await repository.UpdateColumn(request.id,request.name,request.position);
+            var result = await repository.UpdateColumn(request.id,request.name,request.position);
+
+            if(result == null)
+            {
+                return null;
+            }
 
             logger.Information($"Column with ID: {request.id} updated successfully");
-            return ResultModel.Ok();
+            return ResultModelObject<KanbanColumnDto>.Ok(result);
 
         }
 

@@ -30,7 +30,7 @@ namespace Api.Controllers.Task
             var columns = await service.GetColumns(userIdGuid);
             if(columns == null)
             {
-                return BadRequest();
+                return Ok();
             }
             var response = columns.Select(r => new KanbanColumnDto(r.id, r.name, r.position));
             return Ok(response);
@@ -64,7 +64,7 @@ namespace Api.Controllers.Task
         [HttpPut]
         [Authorize]
         [RequirePermissions(Permission.Write)]
-        public async Task<ActionResult> UpdateKanbanColumn([FromBody] KanbanColumnDto request)
+        public async Task<ActionResult<ResultModelObject<KanbanColumnDto>>> UpdateKanbanColumn([FromBody] KanbanColumnDto request)
         {
             var userId = User.FindFirst(CustomClaims.UserId)?.Value;
             var userIdGuid = new Guid(userId);
@@ -78,7 +78,7 @@ namespace Api.Controllers.Task
                 return BadRequest(result.ErrorMessage);
             }
 
-            return Ok();
+            return Ok(result);
         }
 
         [Authorize]

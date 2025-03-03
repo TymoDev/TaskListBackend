@@ -60,7 +60,7 @@ namespace Persistance.Repositories.Repositories.Tasks
 
             return new TaskKanbanOrderDto(newKanbanTask.Id, newKanbanTask.TaskName, newKanbanTask.ColumnId, order, userId);
         }
-        public async Task<ResultModel> UpdateTask(string taskName, int order, Guid columnId, Guid taskId)
+        public async Task<TaskKanbanOrderDto> UpdateTask(string taskName, int order, Guid columnId, Guid taskId)
         {
             var task = await context.KanbanTasks.FindAsync(taskId);
 
@@ -68,8 +68,7 @@ namespace Persistance.Repositories.Repositories.Tasks
             task.ColumnId = columnId;
             task.Order = order;
             await context.SaveChangesAsync();
-            
-            return ResultModel.Ok();
+            return new TaskKanbanOrderDto(taskId, taskName, columnId, order, task.UserId);
 
         }
    

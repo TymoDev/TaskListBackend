@@ -53,7 +53,7 @@ namespace Aplication.Services.Task
             return ResultModelObject<TaskKanbanOrderDto>.Ok(response);
         }
         
-        public async Task<ResultModel?> UpdateTask(Guid userId, TaskKanbanUpdateDto request)
+        public async Task<ResultModelObject<TaskKanbanOrderDto>> UpdateTask(Guid userId, TaskKanbanUpdateDto request)
         {
             logger.Information($"Updating task with ID: {request.taskId} for user: {userId}");
             var userTasks = await repository.GetUserTasks(userId);
@@ -61,21 +61,20 @@ namespace Aplication.Services.Task
             if (isUserTaskExist == null)
             {
                 logger.Warning($"Task with ID: {request.taskId} for user: {userId} not found");
-                return ResultModel.Error("Sorry, but user don't have this task");
+                return ResultModelObject<TaskKanbanOrderDto>.Error("Sorry, but user don't have this task");
             }
 
             var validationNameStatus = TaskKanbanModel.Create(request.taskName);
             if (!validationNameStatus.Success)
             {
                 logger.Error($"Task update failed: {validationNameStatus.ErrorMessage}");
-                return ResultModel.Error(validationNameStatus.ErrorMessage);
+                return ResultModelObject<TaskKanbanOrderDto>.Error(validationNameStatus.ErrorMessage);
             }
 
-            await repository.UpdateTask(request.taskName, request.order, request.columnId, request.taskId);
+            var result = await repository.UpdateTask(request.taskName, request.order, request.columnId, request.taskId);
 
             logger.Information($"Task with ID: {request.taskId} updated successfully");
-            return ResultModel.Ok();
-
+            return ResultModelObject<TaskKanbanOrderDto>.Ok(result);
         }
 
         public async Task<ResultModel?> DeleteUserTasks(Guid id, Guid userId)

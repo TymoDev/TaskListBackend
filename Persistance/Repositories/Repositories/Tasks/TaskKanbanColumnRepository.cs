@@ -20,13 +20,9 @@ namespace Persistance.Repositories.Repositories.Tasks
             this.context = context;
         }
 
-        public async Task<List<KanbanColumnDto>?> GetColumns(Guid userId)
+        public async Task<List<KanbanColumnDto>> GetColumns(Guid userId)
         {
             var user = await context.KanbanColumns.FirstOrDefaultAsync(ui => ui.UserId == userId);
-            if (user == null)
-            {
-                return null;
-            }
 
             var kanbanColumns = await context.KanbanColumns
              .OrderBy(tp => tp.Position) //its more effician to do it before select, becous we will 
@@ -56,28 +52,28 @@ namespace Persistance.Repositories.Repositories.Tasks
             return new KanbanColumnDto(id, name, position);
         }
 
-        public async Task<ResultModel> UpdateColumn(Guid id,string name, int position) 
+        public async Task<KanbanColumnDto?> UpdateColumn(Guid id,string name, int position) 
         {
             var column = await context.KanbanColumns.FirstOrDefaultAsync(u => u.Id == id);
 
             if (column == null)
             {
-                return ResultModel.Error("Can not find this column");
+                return null;
             }
 
             column.Name = name;
             column.Position = position;
             await context.SaveChangesAsync();
 
-            return ResultModel.Ok();
+            return new KanbanColumnDto(id, name, position);
         }
 
         public async Task<ResultModel?> DeleteColumn(Guid taskId)
         {
-            var task = await context.KanbanColumns.FirstOrDefaultAsync(t => t.Id == taskId);
-            if (task == null) return null;
+            var column = await context.KanbanColumns.FirstOrDefaultAsync(t => t.Id == taskId);
+            if (column == null) return null;
 
-            context.KanbanColumns.Remove(task);
+            context.KanbanColumns.Remove(column);
             await context.SaveChangesAsync();
 
             return ResultModel.Ok();

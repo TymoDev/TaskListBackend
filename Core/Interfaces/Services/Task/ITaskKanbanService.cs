@@ -7,7 +7,7 @@ namespace Aplication.Services.Task
     {
         Task<List<TaskKanbanOrderDto>?> GetUserTasks(Guid userId);
         Task<ResultModelObject<TaskKanbanOrderDto>> CreateUserTasks(TaskKanbanDto request, Guid userId);
-        Task<ResultModel?> UpdateTask(Guid userId, TaskKanbanUpdateDto request);
+        Task<ResultModelObject<TaskKanbanOrderDto>> UpdateTask(Guid userId, TaskKanbanUpdateDto request);
         Task<ResultModel?> DeleteUserTasks(Guid id, Guid userId);
     }
 }
