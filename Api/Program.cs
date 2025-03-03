@@ -17,6 +17,7 @@ using Infrastracture.EmailLogic;
 using Infrastracture.Logging;
 using Infrastracture.Logic;
 using Infrastracture.Logic.CodesGeneration;
+using Infrastracture.Photos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.EntityFrameworkCore;
@@ -114,6 +115,14 @@ builder.Services.Configure<EmailOptions>(options =>
     options.Password = Environment.GetEnvironmentVariable("EMAIL_PASSWORD");
 });
 
+
+builder.Services.Configure<CloudinarySettings>(options =>
+{
+    options.CloudName = Environment.GetEnvironmentVariable("CloudName");
+    options.ApiKey = Environment.GetEnvironmentVariable("ApiKey");
+    options.ApiSecret = Environment.GetEnvironmentVariable("ApiSecret");
+});
+
 builder.Services.Configure<CacheOptions>(builder.Configuration.GetSection(nameof(CacheOptions)));
 builder.Services.Configure<PersistanceAuthorizationOptions>(builder.Configuration.GetSection(nameof(PersistanceAuthorizationOptions)));
 
@@ -145,7 +154,7 @@ builder.Services.AddScoped<ITaskKanbanService,TaskKanbanService>();
 
 builder.Services.AddApiAuthentication(builder.Configuration);
 builder.Services.AddApiRedis(builder.Configuration);
-//builder.Services.AddSerilog(builder.Configuration, builder.Host);
+builder.Services.AddCloudinary(builder.Configuration);
 
 builder.Services.AddAuthorization(options =>
 {

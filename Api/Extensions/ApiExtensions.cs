@@ -1,7 +1,9 @@
-﻿using Core.Enums;
+﻿using CloudinaryDotNet;
+using Core.Enums;
 using Infrastracture.Auth.Authentication;
 using Infrastracture.Auth.Authontication;
 using Infrastracture.EmailLogic;
+using Infrastracture.Photos;
 using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -44,18 +46,23 @@ namespace Api.Extensions
         }
         public static void AddApiRedis(this IServiceCollection services, IConfiguration configuration)
         {
-            var jwtOptions = configuration.GetSection("JwtOptions").Get<JwtOptions>();
-
             services.AddStackExchangeRedisCache(options =>
             {
                 string connection = configuration.GetConnectionString("Redis");
                 options.Configuration = connection;
             });
         }
-        /*public static void AddSerilog(this IServiceCollection services, IConfiguration configuration, IHostBuilder hostBuilder)
+        public static void AddCloudinary(this IServiceCollection services, IConfiguration configuration)
         {
-            hostBuilder.UseSerilog((context, loggerConfiguration) =>
-                loggerConfiguration.ReadFrom.Configuration(configuration));
-        }*/
+            var cloudinaryOptions = services.BuildServiceProvider().GetRequiredService<IOptions<CloudinarySettings>>().Value;
+
+            var account = new Account(
+                cloudinaryOptions.CloudName,
+                cloudinaryOptions.ApiKey,
+                cloudinaryOptions.ApiSecret
+            );
+            var cloudinary = new Cloudinary(account);
+            services.AddSingleton(cloudinary);
+        }
     }
 }
