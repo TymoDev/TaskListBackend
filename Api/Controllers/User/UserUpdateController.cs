@@ -1,5 +1,6 @@
 ﻿using Api.Attributes;
 using Aplication.Services.User;
+using Core.ConfigurationProp;
 using Core.DTO.UserDTO;
 using Core.Enums;
 using Core.ResultModels;
@@ -56,13 +57,12 @@ namespace Api.Controllers.User
             }
             return Ok(id);
         }
-        [RequirePermissions(Permission.GetUsers)]
-        [HttpPut]
+        [RequirePermissions(Permission.Write)]
+        [HttpPut("password")]
         [Authorize]
         public async Task<ActionResult<string>> UpdateUserPassword(ResetPasswordDto request)
         {
-            ResultModel result;
-            result = await service.UpdateUserPassword(request);
+            ResultModel result = await service.UpdateUserPassword(request);
             
             if (result == null)
             {
@@ -73,6 +73,31 @@ namespace Api.Controllers.User
                 return BadRequest(result.ErrorMessage);
             }
             return Ok(request.Email);
+        }
+
+        [RequirePermissions(Permission.Write)]
+        [HttpPut("image")]
+        [Authorize]
+        public async Task<ActionResult<string>> UpdateUserProfileImage(IFormFile file)
+        {
+            var userId = User.FindFirst(CustomClaims.UserId)?.Value;
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized();
+            }
+            var userIdGuid = Guid.Parse(userId);
+            ResultModelObject<string> result = await service.UpdateUserProfileImage(userIdGuid, file);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            if (!result.Success)
+            {
+                return BadRequest(result.ErrorMessage);
+            }
+            return Ok(result.Data);
         }
 
         [HttpDelete("{id:guid}")]

@@ -63,6 +63,17 @@ namespace Persistance.Repositories.Repositories.Users
             await context.SaveChangesAsync();
             return user.Email;
         }
+        public async Task<string?> UpdateUserProfileImage(Guid userId, string imageUrl)
+        {
+            var userProfile = await context.UsersProfiles.SingleOrDefaultAsync(u => u.UserId == userId);
+            if (userProfile == null)
+            {
+                return null;
+            }
+            userProfile.ProfileImageUrl = imageUrl;
+            await context.SaveChangesAsync();
+            return userProfile.ProfileImageUrl;
+        }
         public async Task<Guid?> CreateUser(Guid userId, Guid profileId, RegisterUserWithProfileDto data)
         {
             var roleEntity = await context.Roles

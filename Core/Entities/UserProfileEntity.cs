@@ -7,11 +7,10 @@ public class UserProfileEntity
     [Key] 
     [ForeignKey("User")]
     public required Guid UserId { get; set; }
-
     public required string Username { get; set; }
+    public string? ProfileImageUrl { get; set; }
     public string? Gender { get; set; }
     public string? Birthday { get; set; }
-
     public string? Location { get; set; }
     public string? Description { get; set; }
     public string? TwitterUrl { get; set; }

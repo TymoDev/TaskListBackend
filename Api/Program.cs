@@ -121,13 +121,14 @@ builder.Services.Configure<CloudinarySettings>(options =>
     options.CloudName = Environment.GetEnvironmentVariable("CloudName");
     options.ApiKey = Environment.GetEnvironmentVariable("ApiKey");
     options.ApiSecret = Environment.GetEnvironmentVariable("ApiSecret");
+    options.CLOUDINARY_URL = Environment.GetEnvironmentVariable("CLOUDINARY_URL");
 });
 
 builder.Services.Configure<CacheOptions>(builder.Configuration.GetSection(nameof(CacheOptions)));
 builder.Services.Configure<PersistanceAuthorizationOptions>(builder.Configuration.GetSection(nameof(PersistanceAuthorizationOptions)));
 
 
-
+builder.Services.AddScoped<ICloudinaryLogic, CloudinaryLogic>();
 builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
 builder.Services.AddSingleton<IJwtProvider, JwtProvider>();
 builder.Services.AddSingleton<IEmailSender, EmailSender>();

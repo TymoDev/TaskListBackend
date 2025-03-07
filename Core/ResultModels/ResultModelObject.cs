@@ -33,7 +33,6 @@ namespace Core.ResultModels
         public static ResultModelObject<T> Error(string errorMessage)
         {
             return new ResultModelObject<T>(false, errorMessage, default(T));
-        }
+        }     
     }
-
 }

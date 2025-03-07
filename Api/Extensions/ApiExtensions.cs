@@ -55,13 +55,12 @@ namespace Api.Extensions
         public static void AddCloudinary(this IServiceCollection services, IConfiguration configuration)
         {
             var cloudinaryOptions = services.BuildServiceProvider().GetRequiredService<IOptions<CloudinarySettings>>().Value;
-
             var account = new Account(
                 cloudinaryOptions.CloudName,
                 cloudinaryOptions.ApiKey,
                 cloudinaryOptions.ApiSecret
             );
-            var cloudinary = new Cloudinary(account);
+            var cloudinary = new Cloudinary(cloudinaryOptions.CLOUDINARY_URL);
             services.AddSingleton(cloudinary);
         }
     }

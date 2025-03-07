@@ -4,6 +4,8 @@ using Core.Interfaces.Repositories;
 using Core.ResultModels;
 using Core.ValidationModels.User;
 using Infrastracture.Logic;
+using Infrastracture.Photos;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,12 +20,14 @@ namespace Aplication.Services.User
         private readonly IUserRepository repository;
         private readonly IPasswordHasher hasher;
         private readonly IAppLogger logger;
+        private readonly ICloudinaryLogic cloudinary;
 
-        public UserUpdateService(IUserRepository repository, IPasswordHasher hasher, IAppLogger logger)
+        public UserUpdateService(IUserRepository repository, IPasswordHasher hasher, IAppLogger logger, ICloudinaryLogic cloudinary)
         {
             this.repository = repository;
             this.hasher = hasher;
             this.logger = logger;
+            this.cloudinary = cloudinary;
         }
 
         public async Task<ResultModel?> UpdateUser(UserIdDto request)
@@ -81,6 +85,25 @@ namespace Aplication.Services.User
 
             logger.Information($"Successfully updated password for email: {request.Email}");
             return ResultModel.Ok();
+        }
+        public async Task<ResultModelObject<string>?> UpdateUserProfileImage(Guid userId, IFormFile file)
+        {
+            logger.Information($"Updating profile image for user with id: {userId}");
+            var isUserExist = repository.GetUserById(userId);
+            if (isUserExist == null)
+            {
+                logger.Error($"Can not find user with id: {userId}");
+                return ResultModelObject<string>.Error($"Can not find user with id: {userId}");
+            }
+
+            var url = await cloudinary.UploadImage(file);
+            if (!url.Success)
+            {
+                logger.Information($"Cloudinary error: {url.ErrorMessage}");
+                return ResultModelObject<string>.Error($"Cloudinary error: {url.ErrorMessage}");
+            }
+            var result = repository.UpdateUserProfileImage(userId, url.Data);
+            return ResultModelObject<string>.Ok(url.Data);
         }
 
         public async Task<ResultModel?> DeleteUser(Guid id)
