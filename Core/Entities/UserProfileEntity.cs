@@ -8,7 +8,9 @@ public class UserProfileEntity
     [ForeignKey("User")]
     public required Guid UserId { get; set; }
     public required string Username { get; set; }
-    public string? ProfileImageUrl { get; set; }
+
+    [ForeignKey("ProfileImage")]
+    public Guid? ProfileImageId { get; set; }
     public string? Gender { get; set; }
     public string? Birthday { get; set; }
     public string? Location { get; set; }
@@ -17,6 +19,6 @@ public class UserProfileEntity
     public string? LinkedInUrl { get; set; }
     public string? GitHubUrl { get; set; }
     public string? PersonalWebsiteUrl { get; set; }
-
+    public ProfileImagesEntity? ProfileImage { get; set; }
     public UserEntity User { get; set; } = null!; 
 }

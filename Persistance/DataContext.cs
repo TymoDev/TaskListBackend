@@ -18,6 +18,7 @@ namespace Persistance
         public DbSet<KanbanColumnEntity> KanbanColumns { get; set; }
         public DbSet<RoleEntity> Roles { get; set; }
         public DbSet<UserProfileEntity> UsersProfiles { get; set; }
+        public DbSet<ProfileImagesEntity> ProfileImages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

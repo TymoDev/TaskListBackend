@@ -8,6 +8,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Core.ResultModels;
+using Core.Entities;
+using Core.DTO.UserDTO;
 
 namespace Infrastracture.Photos
 {
@@ -19,17 +21,18 @@ namespace Infrastracture.Photos
         {
             this.cloudinary = cloudinary;
         }
-        public async Task<ResultModelObject<string>> UploadImage(IFormFile file)
+        public async Task<ResultModelObject<ProfileImageDto>> UploadImage(IFormFile file)
         {
             if (file == null || file.Length == 0)
-                return ResultModelObject<string>.Error("File not found");
+                return ResultModelObject<ProfileImageDto>.Error("File not found");
 
             using var stream = file.OpenReadStream();
             var uniqueFileName = $"{Guid.NewGuid()}_{Path.GetFileNameWithoutExtension(file.FileName)}";
+            var publicId = $"images/{uniqueFileName}";
             var uploadParams = new ImageUploadParams
             {
                 File = new FileDescription(file.FileName, stream),
-                PublicId = $"images/{uniqueFileName}",
+                PublicId = publicId,
                 Overwrite = true
             };
 
@@ -37,9 +40,9 @@ namespace Infrastracture.Photos
             var uploadResult = await cloudinary.UploadAsync(uploadParams);
 
             if (uploadResult.Error != null)
-                return ResultModelObject<string>.Error(uploadResult.Error.Message);
+                return ResultModelObject<ProfileImageDto>.Error(uploadResult.Error.Message);
 
-            return ResultModelObject<string>.Ok(uploadResult.SecureUrl.ToString());
+            return ResultModelObject<ProfileImageDto>.Ok(new ProfileImageDto(uploadResult.SecureUrl.ToString(), publicId));
         }
         public ResultModelObject<string> GetImage(string publicId)
         {
@@ -47,5 +50,15 @@ namespace Infrastracture.Photos
             return ResultModelObject<string>.Ok(url);
         }
 
+        public async Task<ResultModel> DeleteImage(string publicId)
+        {
+            var deleteParams = new DeletionParams(publicId);
+            var deleteResult = await cloudinary.DestroyAsync(deleteParams);
+
+            if (deleteResult.Result == "ok")
+                return ResultModel.Ok();
+
+            return ResultModel.Error("Failed to delete image");
+        }
     }
 }

@@ -26,7 +26,7 @@ public class UserProfileController : Controller
         {
             return NotFound();
         }
-        var response = new UserProfileDto(serviceResponse.Id,serviceResponse.Username,serviceResponse.Gender,serviceResponse.Birthday, serviceResponse.Location, serviceResponse.Description, serviceResponse.TwitterUrl, serviceResponse.LinkedInUrl, serviceResponse.GitHubUrl, serviceResponse.PersonalWebsiteUrl);
+        var response = new UserProfileDto(serviceResponse.Id, serviceResponse.Username, serviceResponse.ProfileImageUrl, serviceResponse.imagePublicId, serviceResponse.Gender, serviceResponse.Birthday, serviceResponse.Location, serviceResponse.Description, serviceResponse.TwitterUrl, serviceResponse.LinkedInUrl, serviceResponse.GitHubUrl, serviceResponse.PersonalWebsiteUrl);
         return Ok(response);
 
     }

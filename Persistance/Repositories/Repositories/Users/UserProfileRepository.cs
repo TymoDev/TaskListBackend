@@ -20,7 +20,27 @@ namespace Persistance.Repositories.Repositories.Users
         }
         public async Task<UserProfileDto?> GetUserProfile(Guid userId)
         {
-            return await GetById(userId, userProfile => new UserProfileDto(userId, userProfile.Username, userProfile.Gender, userProfile.Birthday, userProfile.Location, userProfile.Description, userProfile.TwitterUrl, userProfile.LinkedInUrl, userProfile.GitHubUrl, userProfile.PersonalWebsiteUrl));
+            var userProfileDto = await context.UsersProfiles
+              .Include(u => u.ProfileImage)
+              .AsNoTracking()
+              .Where(u => u.UserId == userId)
+              .Select(userProfile => new UserProfileDto(
+                  userId,
+                  userProfile.Username,
+                  userProfile.ProfileImage != null ? userProfile.ProfileImage.ProfileImageUrl : "",
+                  userProfile.ProfileImage != null ? userProfile.ProfileImage.ImagePublicId : "",
+                  userProfile.Gender,
+                  userProfile.Birthday,
+                  userProfile.Location,
+                  userProfile.Description,
+                  userProfile.TwitterUrl,
+                  userProfile.LinkedInUrl,
+                  userProfile.GitHubUrl,
+                  userProfile.PersonalWebsiteUrl
+              ))
+              .FirstOrDefaultAsync();
+
+            return userProfileDto;
         }
     }
 }

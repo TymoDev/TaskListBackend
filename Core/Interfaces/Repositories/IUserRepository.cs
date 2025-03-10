@@ -17,7 +17,7 @@ namespace Core.Interfaces.Repositories
         public Task<UserPasswordDto?> GetUserByEmailOrUsername(string login);
         public  Task<Guid?> UpdateUser(UserHashDto user);
         Task<string?> UpdateUserPassword(string email, string password);
-        Task<string?> UpdateUserProfileImage(Guid userId, string imageUrl);
+        Task<string?> UpdateUserProfileImage(Guid userId, string imageUrl, string imagePublicId);
         public  Task<Guid?> CreateUser(Guid userId,Guid profileId, RegisterUserWithProfileDto data);
         public  Task<Guid?> DeleteUser(Guid id);
         Task<HashSet<Permission>> GetUserPermissions(Guid userId);

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Persistance;
 
@@ -10,9 +11,11 @@ using Persistance;
 namespace Persistance.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20250310153559_ProfileImageTable")]
+    partial class ProfileImageTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.0");
@@ -308,8 +311,7 @@ namespace Persistance.Migrations
 
                     b.HasKey("UserId");
 
-                    b.HasIndex("ProfileImageId")
-                        .IsUnique();
+                    b.HasIndex("ProfileImageId");
 
                     b.ToTable("UsersProfiles");
                 });
@@ -388,9 +390,8 @@ namespace Persistance.Migrations
             modelBuilder.Entity("UserProfileEntity", b =>
                 {
                     b.HasOne("Core.Entities.ProfileImagesEntity", "ProfileImage")
-                        .WithOne()
-                        .HasForeignKey("UserProfileEntity", "ProfileImageId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .WithMany()
+                        .HasForeignKey("ProfileImageId");
 
                     b.HasOne("Core.Entities.UserEntity", "User")
                         .WithOne("Profile")

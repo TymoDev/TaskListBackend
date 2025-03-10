@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Persistance;
 
@@ -10,9 +11,11 @@ using Persistance;
 namespace Persistance.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20250308175655_ProfileImageProp")]
+    partial class ProfileImageProp
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.0");
@@ -107,25 +110,6 @@ namespace Persistance.Migrations
                             Id = 4,
                             Name = "GetTasks"
                         });
-                });
-
-            modelBuilder.Entity("Core.Entities.ProfileImagesEntity", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("ImagePublicId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("ProfileImageUrl")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ProfileImages");
                 });
 
             modelBuilder.Entity("Core.Entities.RoleEntity", b =>
@@ -296,7 +280,7 @@ namespace Persistance.Migrations
                     b.Property<string>("PersonalWebsiteUrl")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid?>("ProfileImageId")
+                    b.Property<string>("ProfileImageUrl")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("TwitterUrl")
@@ -307,9 +291,6 @@ namespace Persistance.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("UserId");
-
-                    b.HasIndex("ProfileImageId")
-                        .IsUnique();
 
                     b.ToTable("UsersProfiles");
                 });
@@ -387,18 +368,11 @@ namespace Persistance.Migrations
 
             modelBuilder.Entity("UserProfileEntity", b =>
                 {
-                    b.HasOne("Core.Entities.ProfileImagesEntity", "ProfileImage")
-                        .WithOne()
-                        .HasForeignKey("UserProfileEntity", "ProfileImageId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
                     b.HasOne("Core.Entities.UserEntity", "User")
                         .WithOne("Profile")
                         .HasForeignKey("UserProfileEntity", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("ProfileImage");
 
                     b.Navigation("User");
                 });

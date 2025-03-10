@@ -6,6 +6,7 @@ using Core.ValidationModels.User;
 using Infrastracture.Logic;
 using Infrastracture.Photos;
 using Microsoft.AspNetCore.Http;
+using Persistance.Repositories.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,13 +19,15 @@ namespace Aplication.Services.User
     public class UserUpdateService : IUserUpdateService
     {
         private readonly IUserRepository repository;
+        private readonly IUserProfileRepository profileRepository;
         private readonly IPasswordHasher hasher;
         private readonly IAppLogger logger;
         private readonly ICloudinaryLogic cloudinary;
 
-        public UserUpdateService(IUserRepository repository, IPasswordHasher hasher, IAppLogger logger, ICloudinaryLogic cloudinary)
+        public UserUpdateService(IUserRepository repository, IUserProfileRepository profileRepository, IPasswordHasher hasher, IAppLogger logger, ICloudinaryLogic cloudinary)
         {
             this.repository = repository;
+            this.profileRepository = profileRepository;
             this.hasher = hasher;
             this.logger = logger;
             this.cloudinary = cloudinary;
@@ -89,21 +92,26 @@ namespace Aplication.Services.User
         public async Task<ResultModelObject<string>?> UpdateUserProfileImage(Guid userId, IFormFile file)
         {
             logger.Information($"Updating profile image for user with id: {userId}");
-            var isUserExist = repository.GetUserById(userId);
-            if (isUserExist == null)
+            var isProfileExist = await profileRepository.GetUserProfile(userId);
+            if (isProfileExist == null)
             {
                 logger.Error($"Can not find user with id: {userId}");
                 return ResultModelObject<string>.Error($"Can not find user with id: {userId}");
             }
 
-            var url = await cloudinary.UploadImage(file);
-            if (!url.Success)
+            var imageData = await cloudinary.UploadImage(file);
+            if (!imageData.Success)
             {
-                logger.Information($"Cloudinary error: {url.ErrorMessage}");
-                return ResultModelObject<string>.Error($"Cloudinary error: {url.ErrorMessage}");
+                logger.Information($"Cloudinary error: {imageData.ErrorMessage}");
+                return ResultModelObject<string>.Error($"Cloudinary error: {imageData.ErrorMessage}");
             }
-            var result = repository.UpdateUserProfileImage(userId, url.Data);
-            return ResultModelObject<string>.Ok(url.Data);
+            if(!String.IsNullOrEmpty(isProfileExist.imagePublicId))
+            {
+                await cloudinary.DeleteImage(isProfileExist.imagePublicId);
+            }
+
+            var result = repository.UpdateUserProfileImage(userId, imageData.Data.imageUrl, imageData.Data.imagePublicId);
+            return ResultModelObject<string>.Ok(imageData.Data.imageUrl);
         }
 
         public async Task<ResultModel?> DeleteUser(Guid id)

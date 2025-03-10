@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace Core.DTO.UserDTO
 {
-    public record UserProfileDto(Guid Id, string Username, string? Gender,string? Birthday, string? Location, string? Description, string? TwitterUrl, string? LinkedInUrl, string? GitHubUrl, string? PersonalWebsiteUrl);
+    public record UserProfileDto(Guid Id, string Username, string? ProfileImageUrl, string? imagePublicId, string? Gender,string? Birthday, string? Location, string? Description, string? TwitterUrl, string? LinkedInUrl, string? GitHubUrl, string? PersonalWebsiteUrl);
 }
