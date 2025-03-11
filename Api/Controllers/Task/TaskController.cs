@@ -72,7 +72,7 @@ namespace Api.Controllers.Task
             {
                 return BadRequest(result.ErrorMessage);
             }
-            return Ok(result);
+            return Ok(result.Data);
         }
 
         [HttpPut("{id:guid}")]
