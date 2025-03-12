@@ -78,7 +78,7 @@ namespace Api.Controllers.User
         [RequirePermissions(Permission.Write)]
         [HttpPut("image")]
         [Authorize]
-        public async Task<ActionResult<string>> UpdateUserProfileImage(IFormFile file)
+        public async Task<ActionResult<UpdateProfileImageDto>> UpdateUserProfileImage(IFormFile file)
         {
             var userId = User.FindFirst(CustomClaims.UserId)?.Value;
             if (string.IsNullOrEmpty(userId))
@@ -97,7 +97,8 @@ namespace Api.Controllers.User
             {
                 return BadRequest(result.ErrorMessage);
             }
-            return Ok(result.Data);
+            var response = new UpdateProfileImageDto(userIdGuid, result.Data);
+            return Ok(response);
         }
 
         [HttpDelete("{id:guid}")]

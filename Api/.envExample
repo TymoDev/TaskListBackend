@@ -1,0 +1,22 @@
+# JWT (JSON Web Token) Configuration
+JWT_SECRET_KEY=  # Secret key for signing JWT tokens (FILL IN)
+JWT_EXPIRES_HOURS=  # JWT expiration time in hours (e.g., 12)
+
+# Email SMTP Configuration
+EMAIL_SMTP_SERVER=  # SMTP server for sending emails (e.g., smtp.example.com)
+EMAIL_PORT=  # SMTP server port (e.g., 587)
+EMAIL_USE_SSL=  # Use SSL for SMTP (true/false)
+EMAIL_FROM=  # Email address used as the sender
+EMAIL_PASSWORD=  # Password for the email sender account (FILL IN)
+
+# Cache Configuration
+CACHE_EXPIRES_MINUTES=  # Cache expiration time in minutes (e.g., 5)
+
+# Azure Storage Configuration
+AZURE_STORAGE_CONNECTION_STRING=  # Connection string for Azure Storage (FILL IN)
+
+# Cloudinary Configuration
+CloudName=  # Your Cloudinary cloud name (FILL IN)
+ApiKey=  # Your Cloudinary API key (FILL IN)
+ApiSecret=  # Your Cloudinary API secret (FILL IN)
+CLOUDINARY_URL=  # Full Cloudinary API URL (e.g., cloudinary://API_KEY:API_SECRET@CLOUD_NAME)
